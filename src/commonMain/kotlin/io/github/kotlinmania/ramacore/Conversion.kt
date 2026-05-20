@@ -1,4 +1,4 @@
-// port-lint: source src/conversion.rs
+// port-lint: source conversion.rs
 package io.github.kotlinmania.ramacore
 
 /**
