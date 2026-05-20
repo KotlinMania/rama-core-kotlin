@@ -268,6 +268,25 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("io.github.kotlinmania:ahash-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:asynk-strim-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:bytes-kotlin:0.2.0")
+                implementation("io.github.kotlinmania:futures-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:opentelemetry-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:opentelemetry-sdk-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:opentelemetry-semantic-conventions-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:parking-lot-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:pin-project-lite-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:rama-error-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:rama-macros-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:rama-utils-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:serde-kotlin:0.1.1")
+                implementation("io.github.kotlinmania:serde-json-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tokio-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tokio-graceful-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tokio-util-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tracing-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tracing-opentelemetry-kotlin:0.1.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.11.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
@@ -278,6 +297,9 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("io.github.kotlinmania:quickcheck-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:rand-kotlin:0.1.0")
+                implementation("io.github.kotlinmania:tokio-test-kotlin:0.1.0")
             }
         }
 
