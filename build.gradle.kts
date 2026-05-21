@@ -270,7 +270,7 @@ kotlin {
             dependencies {
                 implementation("io.github.kotlinmania:ahash-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:asynk-strim-kotlin:0.1.0")
-                implementation("io.github.kotlinmania:bytes-kotlin:0.2.0")
+                implementation("io.github.kotlinmania:bytes-kotlin:0.2.1")
                 implementation("io.github.kotlinmania:futures-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:opentelemetry-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:opentelemetry-sdk-kotlin:0.1.0")
