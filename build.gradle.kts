@@ -276,7 +276,6 @@ kotlin {
                 implementation("io.github.kotlinmania:opentelemetry-sdk-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:opentelemetry-semantic-conventions-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:parking-lot-kotlin:0.1.0")
-                implementation("io.github.kotlinmania:pin-project-lite-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:rama-error-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:rama-macros-kotlin:0.1.0")
                 implementation("io.github.kotlinmania:rama-utils-kotlin:0.1.0")
