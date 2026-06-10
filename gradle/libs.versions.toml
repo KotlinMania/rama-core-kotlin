@@ -1,0 +1,76 @@
+[versions]
+kotlin = "2.4.0"
+coroutines = "1.11.0"
+serialization = "1.11.0"
+datetime = "0.8.0"
+collectionsImmutable = "0.4.0"
+androidKmp = "9.2.1"
+vanniktech = "0.36.0"
+detekt = "1.23.8"
+ktlint = "14.2.0"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+android-kmp = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidKmp" }
+vanniktech = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+
+[libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "collectionsImmutable" }
+
+ahash-kotlin = { module = "io.github.kotlinmania:ahash-kotlin", version = "0.1.0" }
+asynk-strim-kotlin = { module = "io.github.kotlinmania:asynk-strim-kotlin", version = "0.1.0" }
+bytes-kotlin = { module = "io.github.kotlinmania:bytes-kotlin", version = "0.2.1" }
+futures-kotlin = { module = "io.github.kotlinmania:futures-kotlin", version = "0.1.0" }
+opentelemetry-kotlin = { module = "io.github.kotlinmania:opentelemetry-kotlin", version = "0.1.0" }
+opentelemetry-sdk-kotlin = { module = "io.github.kotlinmania:opentelemetry-sdk-kotlin", version = "0.1.0" }
+opentelemetry-semantic-conventions-kotlin = { module = "io.github.kotlinmania:opentelemetry-semantic-conventions-kotlin", version = "0.1.0" }
+parking-lot-kotlin = { module = "io.github.kotlinmania:parking-lot-kotlin", version = "0.1.0" }
+rama-error-kotlin = { module = "io.github.kotlinmania:rama-error-kotlin", version = "0.1.0" }
+rama-macros-kotlin = { module = "io.github.kotlinmania:rama-macros-kotlin", version = "0.1.0" }
+rama-utils-kotlin = { module = "io.github.kotlinmania:rama-utils-kotlin", version = "0.1.0" }
+serde-kotlin = { module = "io.github.kotlinmania:serde-kotlin", version = "0.1.1" }
+serde-json-kotlin = { module = "io.github.kotlinmania:serde-json-kotlin", version = "0.1.0" }
+tokio-kotlin = { module = "io.github.kotlinmania:tokio-kotlin", version = "0.1.0" }
+tokio-graceful-kotlin = { module = "io.github.kotlinmania:tokio-graceful-kotlin", version = "0.1.0" }
+tokio-util-kotlin = { module = "io.github.kotlinmania:tokio-util-kotlin", version = "0.1.0" }
+tracing-kotlin = { module = "io.github.kotlinmania:tracing-kotlin", version = "0.1.0" }
+tracing-opentelemetry-kotlin = { module = "io.github.kotlinmania:tracing-opentelemetry-kotlin", version = "0.1.0" }
+quickcheck-kotlin = { module = "io.github.kotlinmania:quickcheck-kotlin", version = "0.1.0" }
+rand-kotlin = { module = "io.github.kotlinmania:rand-kotlin", version = "0.1.0" }
+tokio-test-kotlin = { module = "io.github.kotlinmania:tokio-test-kotlin", version = "0.1.0" }
+[bundles]
+rama-core-commonMain = [
+    "kotlinx-coroutines-core",
+    "kotlinx-serialization-core",
+    "kotlinx-serialization-json",
+    "kotlinx-datetime",
+    "collections-immutable",
+    "ahash-kotlin",
+    "asynk-strim-kotlin",
+    "bytes-kotlin",
+    "futures-kotlin",
+    "opentelemetry-kotlin",
+    "opentelemetry-sdk-kotlin",
+    "opentelemetry-semantic-conventions-kotlin",
+    "parking-lot-kotlin",
+    "rama-error-kotlin",
+    "rama-macros-kotlin",
+    "rama-utils-kotlin",
+    "serde-kotlin",
+    "serde-json-kotlin",
+    "tokio-kotlin",
+    "tokio-graceful-kotlin",
+    "tokio-util-kotlin",
+    "tracing-kotlin",
+    "tracing-opentelemetry-kotlin",
+    "quickcheck-kotlin",
+    "rand-kotlin",
+    "tokio-test-kotlin",
+]
