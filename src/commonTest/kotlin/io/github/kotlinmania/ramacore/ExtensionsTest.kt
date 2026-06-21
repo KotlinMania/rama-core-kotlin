@@ -51,7 +51,9 @@ class ExtensionsTest {
 
     @Test
     fun testExtensions() {
-        data class MyType(val value: Int)
+        data class MyType(
+            val value: Int,
+        )
 
         val extensions = Extensions()
 
@@ -123,11 +125,12 @@ class ExtensionsTest {
         val b = Extensions().also { it.insert("from-b") }
         val c = Extensions().also { it.insert(42) }
 
-        val triple = ChainableExtensionsTriple(
-            a.asExtensionsRef(),
-            b.asExtensionsRef(),
-            c.asExtensionsRef(),
-        )
+        val triple =
+            ChainableExtensionsTriple(
+                a.asExtensionsRef(),
+                b.asExtensionsRef(),
+                c.asExtensionsRef(),
+            )
         assertEquals("from-b", triple.get<String>())
         assertEquals(42, triple.get<Int>())
         assertFalse(triple.contains<Double>())

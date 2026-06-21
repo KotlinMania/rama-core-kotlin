@@ -66,13 +66,16 @@ public class RamaResult<out T, out E> private constructor(
     }
 
     public fun isSuccess(): Boolean = value != null
+
     public fun isFailure(): Boolean = error != null
 
     public fun getOrNull(): T? = value
+
     public fun errorOrNull(): E? = error
 
     public companion object {
         public fun <T : Any> ok(value: T): RamaResult<T, Nothing> = RamaResult(value, null)
+
         public fun <E : Any> err(error: E): RamaResult<Nothing, E> = RamaResult(null, error)
     }
 }

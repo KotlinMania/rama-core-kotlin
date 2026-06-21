@@ -15,7 +15,10 @@ import kotlin.reflect.KClass
 public class Extensions {
     private val entries: MutableList<Entry> = mutableListOf()
 
-    private class Entry(val typeId: KClass<*>, val value: Any)
+    private class Entry(
+        val typeId: KClass<*>,
+        val value: Any,
+    )
 
     /** Extend this store with the entries from [other]. */
     public fun extend(other: Extensions): Extensions {
@@ -134,8 +137,11 @@ public interface ExtensionsMut : ExtensionsRef {
     public fun extensionsMut(): Extensions
 }
 
-internal class ExtensionsAsRef(private val store: Extensions) : ExtensionsMut {
+internal class ExtensionsAsRef(
+    private val store: Extensions,
+) : ExtensionsMut {
     override fun extensions(): Extensions = store
+
     override fun extensionsMut(): Extensions = store
 }
 
@@ -209,9 +215,13 @@ public class ChainableExtensionsTriple(
  * Wrapper that a leaf-like service can insert when returning an output
  * so that the input [Extensions] remain accessible to downstream callers.
  */
-public class InputExtensions(public val extensions: Extensions) {
+public class InputExtensions(
+    public val extensions: Extensions,
+) {
     override fun toString(): String = "InputExtensions($extensions)"
+
     override fun equals(other: Any?): Boolean =
         other is InputExtensions && other.extensions === extensions
+
     override fun hashCode(): Int = extensions.hashCode()
 }

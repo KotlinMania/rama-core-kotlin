@@ -31,3 +31,5 @@ package io.github.kotlinmania.ramacore.combinators
 //   (none — Either has no Kotlin callers yet at the time this tracking file
 //   landed; the upstream Service trait impls that consume `impl_either` are
 //   not ported yet.)
+
+internal object CombinatorsModuleLedger
