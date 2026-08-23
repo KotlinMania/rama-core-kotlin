@@ -13,5 +13,5 @@ public const val DEFAULT_USERNAME_LABEL_SEPARATOR: Char = '-'
  * Username utilities module ledger.
  */
 internal object UsernameModuleLedger {
-    val defaultSeparator: Char = DEFAULT_USERNAME_LABEL_SEPARATOR
+    const val defaultSeparator: Char = DEFAULT_USERNAME_LABEL_SEPARATOR
 }

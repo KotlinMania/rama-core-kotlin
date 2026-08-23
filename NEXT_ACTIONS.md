@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 13/60 (21.7%)
-- **Function parity:** 49/446 matched (target 289) — 11.0%
-- **Class/type parity:** 26/173 matched (target 66) — 15.0%
-- **Combined symbol parity:** 75/619 matched (target 355) — 12.1%
-- **Average inline-code cosine:** 0.25 (function body across 9 matched files)
-- **Average documentation cosine:** 0.63 (doc text across 9 matched files)
-- **Cheat-zeroed Files:** 6
-- **Critical Issues:** 12 files with <0.60 function similarity
+- **Files Present:** 39/60 (65.0%)
+- **Function parity:** 118/424 matched (target 465) — 27.8%
+- **Class/type parity:** 70/188 matched (target 119) — 37.2%
+- **Combined symbol parity:** 188/612 matched (target 584) — 30.7%
+- **Average inline-code cosine:** 0.32 (function body across 31 matched files)
+- **Average documentation cosine:** 0.61 (doc text across 31 matched files)
+- **Cheat-zeroed Files:** 10
+- **Critical Issues:** 35 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -39,7 +39,41 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Extension`, `ExtensionType`
 - **Tests:** 4/4 matched
 
-### 2. svc_input
+### 2. policy.matcher
+
+- **Target:** `policy.Matcher`
+- **Similarity:** 0.10
+- **Dependents:** 5
+- **Priority Score:** 5101109.0
+- **Functions:** 1/7 matched (target 3)
+- **Missing functions:** `assert_ready`, `assert_abort`, `matcher_policy_empty`, `matcher_policy_always`, `matches`, `matcher_policy_scoped_limits`
+- **Types:** 0/4 matched (target 1)
+- **Missing types:** `Guard`, `Error`, `NumberedRequest`, `TestMatchers`
+- **Tests:** 0/6 matched
+
+### 3. limit.layer
+
+- **Target:** `limit.Layer`
+- **Similarity:** 0.33
+- **Dependents:** 2
+- **Priority Score:** 2030706.8
+- **Functions:** 3/5 matched (target 4)
+- **Missing functions:** `with_error_into_response_fn`, `into_layer`
+- **Types:** 1/2 matched (target 1)
+- **Missing types:** `Service`
+
+### 4. matcher.iter
+
+- **Target:** `matcher.Iter`
+- **Similarity:** 0.86
+- **Dependents:** 1
+- **Priority Score:** 1010301.4
+- **Functions:** 2/2 matched
+- **Missing functions:** _none_
+- **Types:** 0/1 matched (target 0)
+- **Missing types:** `IteratorMatcherExt`
+
+### 5. svc_input
 
 - **Target:** `ramacore.SvcInput`
 - **Similarity:** 0.13
@@ -50,7 +84,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 3)
 - **Missing types:** _none_
 
-### 3. service.svc
+### 6. service.svc
 
 - **Target:** `service.Svc [ZERO]`
 - **Similarity:** 0.00
@@ -62,19 +96,42 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `Output`, `Error`, `DynService`
 - **Tests:** 0/8 matched
 
-### 4. layer.mod
+### 7. layer.consume_err
+
+- **Target:** `layer.ConsumeErr`
+- **Similarity:** 0.14
+- **Dependents:** 0
+- **Priority Score:** 121708.6
+- **Functions:** 3/9 matched (target 6)
+- **Missing functions:** `fmt`, `default`, `with_output`, `trace`, `with_response`, `into_layer`
+- **Types:** 2/8 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`, `Trace`, `DefaultOutput`, `StaticOutput`
+
+### 8. layer.mod
 
 - **Target:** `layer.Mod [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 111510.0
-- **Functions:** 3/9 matched (target 8)
+- **Functions:** 3/9 matched (target 21)
 - **Missing functions:** `fmt`, `clone`, `simple_input_layer`, `simple_optional_input_layer`, `simple_output_layer`, `simple_optional_output_layer`
-- **Types:** 1/6 matched (target 3)
+- **Types:** 1/6 matched
 - **Missing types:** `Layer`, `Service`, `MaybeLayeredSvc`, `Error`, `Output`
 - **Tests:** 0/4 matched
 
-### 5. service.handler
+### 9. policy.concurrent
+
+- **Target:** `policy.Concurrent`
+- **Similarity:** 0.25
+- **Dependents:** 0
+- **Priority Score:** 101807.5
+- **Functions:** 4/12 matched (target 11)
+- **Missing functions:** `with_backoff`, `max_with_backoff`, `drop`, `assert_ready`, `assert_abort`, `concurrent_policy_zero`, `concurrent_policy`, `concurrent_policy_clone`
+- **Types:** 4/6 matched (target 5)
+- **Missing types:** `Error`, `ConcurrentCounterGuard`
+- **Tests:** 0/5 matched
+
+### 10. service.handler
 
 - **Target:** `service.Handler`
 - **Similarity:** 0.16
@@ -86,30 +143,79 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Factory`, `Output`, `Error`, `FromInput`
 - **Tests:** 1/3 matched
 
-### 6. conversion
+### 11. layer.layer_fn
+
+- **Target:** `layer.LayerFn`
+- **Similarity:** 0.34
+- **Dependents:** 0
+- **Priority Score:** 91306.6
+- **Functions:** 3/7 matched (target 5)
+- **Missing functions:** `fmt`, `test_layer_fn`, `serve`, `layer_fn_has_useful_debug_impl`
+- **Types:** 1/6 matched (target 1)
+- **Missing types:** `Service`, `ToUpper`, `Output`, `Error`, `WrappedService`
+- **Tests:** 0/3 matched
+
+### 12. conversion
 
 - **Target:** `ramacore.Conversion`
 - **Similarity:** 0.21
 - **Dependents:** 0
 - **Priority Score:** 91107.9
-- **Functions:** 2/5 matched (target 9)
+- **Functions:** 2/5 matched (target 11)
 - **Missing functions:** `rama_from`, `rama_try_from`, `from_ref`
 - **Types:** 0/6 matched (target 1)
 - **Missing types:** `RamaFrom`, `RamaInto`, `RamaTryFrom`, `Error`, `RamaTryInto`, `FromRef`
 
-### 7. layer.layer_fn
+### 13. layer.get_extension
 
-- **Target:** `layer.LayerFn`
-- **Similarity:** 0.53
+- **Target:** `layer.GetExtension`
+- **Similarity:** 0.36
 - **Dependents:** 0
-- **Priority Score:** 81304.7
-- **Functions:** 4/7 matched (target 9)
-- **Missing functions:** `fmt`, `serve`, `layer_fn_has_useful_debug_impl`
-- **Types:** 1/6 matched (target 3)
-- **Missing types:** `Service`, `ToUpper`, `Output`, `Error`, `WrappedService`
-- **Tests:** 1/3 matched
+- **Priority Score:** 81606.4
+- **Functions:** 4/8 matched (target 14)
+- **Missing functions:** `fmt`, `clone`, `get_extension_basic`, `get_extension_output`
+- **Types:** 4/8 matched (target 4)
+- **Missing types:** `Service`, `Output`, `Error`, `State`
+- **Tests:** 0/2 matched
 
-### 8. username.compose
+### 14. matcher.ext
+
+- **Target:** `matcher.Ext`
+- **Similarity:** 0.26
+- **Dependents:** 0
+- **Priority Score:** 81207.4
+- **Functions:** 3/6 matched (target 4)
+- **Missing functions:** `call`, `test_extension_matcher`, `test_fn_extension_matcher`
+- **Types:** 1/6 matched (target 1)
+- **Missing types:** `ExtensionPredicate`, `PredicateConst`, `PredicateFn`, `MyMarker`, `MyOtherMarker`
+- **Tests:** 0/2 matched
+- **Lint issues:** 1
+
+### 15. limit.mod
+
+- **Target:** `limit.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 71110.0
+- **Functions:** 3/8 matched (target 7)
+- **Missing functions:** `with_error_into_output_fn`, `test_limit`, `handle_request`, `test_with_error_into_response_fn`, `test_zero_limit`
+- **Types:** 1/3 matched (target 2)
+- **Missing types:** `Output`, `Error`
+- **Tests:** 0/4 matched
+
+### 16. layer.add_extension
+
+- **Target:** `layer.AddExtension`
+- **Similarity:** 0.68
+- **Dependents:** 0
+- **Priority Score:** 61403.2
+- **Functions:** 4/6 matched (target 14)
+- **Missing functions:** `basic_input`, `basic_output`
+- **Types:** 4/8 matched (target 4)
+- **Missing types:** `Service`, `Output`, `Error`, `Counter`
+- **Tests:** 0/2 matched
+
+### 17. username.compose
 
 - **Target:** `username.Compose`
 - **Similarity:** 0.27
@@ -120,7 +226,73 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `ComposeErrorKind`, `UsernameLabelWriter`
 
-### 9. username.parse
+### 18. layer.map_err
+
+- **Target:** `layer.MapErr`
+- **Similarity:** 0.33
+- **Dependents:** 0
+- **Priority Score:** 51006.7
+- **Functions:** 3/5 matched (target 6)
+- **Missing functions:** `fmt`, `into_layer`
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 19. layer.map_output
+
+- **Target:** `layer.MapOutput`
+- **Similarity:** 0.33
+- **Dependents:** 0
+- **Priority Score:** 51006.7
+- **Functions:** 3/5 matched (target 6)
+- **Missing functions:** `fmt`, `into_layer`
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 20. layer.trace_err
+
+- **Target:** `layer.TraceErr`
+- **Similarity:** 0.33
+- **Dependents:** 0
+- **Priority Score:** 51006.7
+- **Functions:** 3/5 matched (target 6)
+- **Missing functions:** `with_level`, `default`
+- **Types:** 2/5 matched (target 3)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 21. layer.map_result
+
+- **Target:** `layer.MapResult`
+- **Similarity:** 0.35
+- **Dependents:** 0
+- **Priority Score:** 51006.5
+- **Functions:** 3/5 matched (target 6)
+- **Missing functions:** `fmt`, `into_layer`
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 22. layer.map_input
+
+- **Target:** `layer.MapInput`
+- **Similarity:** 0.37
+- **Dependents:** 0
+- **Priority Score:** 51006.3
+- **Functions:** 3/5 matched (target 6)
+- **Missing functions:** `fmt`, `into_layer`
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 23. matcher.mfn
+
+- **Target:** `matcher.Mfn`
+- **Similarity:** 0.09
+- **Dependents:** 0
+- **Priority Score:** 50809.1
+- **Functions:** 2/5 matched (target 8)
+- **Missing functions:** `clone`, `fmt`, `call`
+- **Types:** 1/3 matched (target 1)
+- **Missing types:** `MatchFnBox`, `Sealed`
+
+### 24. username.parse
 
 - **Target:** `username.Parse`
 - **Similarity:** 0.69
@@ -132,7 +304,95 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`
 - **Tests:** 7/9 matched
 
-### 10. username.mod
+### 25. timeout.mod
+
+- **Target:** `timeout.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 41010.0
+- **Functions:** 5/6 matched
+- **Missing functions:** `with`
+- **Types:** 1/4 matched (target 1)
+- **Missing types:** `DefaultTimeout`, `Output`, `Error`
+
+### 26. policy.mod
+
+- **Target:** `policy.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 40910.0
+- **Functions:** 1/3 matched
+- **Missing functions:** `fmt`, `new`
+- **Types:** 4/6 matched (target 7)
+- **Missing types:** `Guard`, `Error`
+
+### 27. layer.hijack
+
+- **Target:** `layer.Hijack`
+- **Similarity:** 0.64
+- **Dependents:** 0
+- **Priority Score:** 40903.6
+- **Functions:** 3/4 matched (target 6)
+- **Missing functions:** `into_layer`
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `Output`, `Error`, `Service`
+
+### 28. layer.into_error
+
+- **Target:** `layer.IntoError`
+- **Similarity:** 0.41
+- **Dependents:** 0
+- **Priority Score:** 30705.9
+- **Functions:** 2/2 matched (target 6)
+- **Missing functions:** _none_
+- **Types:** 2/5 matched (target 2)
+- **Missing types:** `MakeLayerError`, `Error`, `Sealed`
+
+### 29. limit.into_output
+
+- **Target:** `limit.IntoOutput`
+- **Similarity:** 0.27
+- **Dependents:** 0
+- **Priority Score:** 30507.3
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 1/4 matched (target 1)
+- **Missing types:** `ErrorIntoOutput`, `Output`, `Error`
+
+### 30. timeout.layer
+
+- **Target:** `timeout.Layer`
+- **Similarity:** 0.56
+- **Dependents:** 0
+- **Priority Score:** 20804.4
+- **Functions:** 5/6 matched
+- **Missing functions:** `into_layer`
+- **Types:** 1/2 matched (target 1)
+- **Missing types:** `Service`
+
+### 31. matcher.mod
+
+- **Target:** `matcher.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10610.0
+- **Functions:** 4/4 matched (target 14)
+- **Missing functions:** _none_
+- **Types:** 1/2 matched
+- **Missing types:** `Matcher`
+
+### 32. timeout.error
+
+- **Target:** `timeout.Error`
+- **Similarity:** 0.42
+- **Dependents:** 0
+- **Priority Score:** 10305.8
+- **Functions:** 1/2 matched (target 4)
+- **Missing functions:** `fmt`
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 33. username.mod
 
 - **Target:** `username.Mod [STUB]`
 - **Similarity:** 0.00
@@ -144,18 +404,40 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
 
-### 11. service.mod
+### 34. matcher.op_not
 
-- **Target:** `service.Mod [STUB]`
-- **Similarity:** 0.00
+- **Target:** `matcher.OpNot`
+- **Similarity:** 0.40
 - **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched
+- **Priority Score:** 306.0
+- **Functions:** 2/2 matched (target 4)
 - **Missing functions:** _none_
-- **Types:** 0/0 matched (target 1)
+- **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 12. combinators.mod
+### 35. matcher.op_and
+
+- **Target:** `matcher.OpAnd`
+- **Similarity:** 0.19
+- **Dependents:** 0
+- **Priority Score:** 208.1
+- **Functions:** 1/1 matched (target 5)
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 36. matcher.op_or
+
+- **Target:** `matcher.OpOr`
+- **Similarity:** 0.19
+- **Dependents:** 0
+- **Priority Score:** 208.1
+- **Functions:** 1/1 matched (target 5)
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 37. combinators.mod
 
 - **Target:** `combinators.Mod [STUB]`
 - **Similarity:** 0.00
@@ -166,7 +448,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
 
-### 13. combinators.either
+### 38. service.mod
+
+- **Target:** `service.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 1)
+- **Missing types:** _none_
+
+### 39. combinators.either
 
 - **Target:** `combinators.Either [ZERO]`
 - **Similarity:** 0.00
@@ -197,11 +490,7 @@ do not treat them as the next implementation target by default.
 
 | Source | Expected target | Deps | Source path | Expected path |
 |--------|-----------------|------|-------------|---------------|
-| `limit.mod` | `layer.limit.Mod` | 0 | `layer/limit/mod.rs` | `layer/limit/Mod.kt` |
-| `policy.mod` | `layer.limit.policy.Mod` | 0 | `layer/limit/policy/mod.rs` | `layer/limit/policy/Mod.kt` |
-| `timeout.mod` | `layer.timeout.Mod` | 0 | `layer/timeout/mod.rs` | `layer/timeout/Mod.kt` |
 | `lib` | `Lib` | 0 | `lib.rs` | `Lib.kt` |
-| `matcher.mod` | `matcher.Mod` | 0 | `matcher/mod.rs` | `matcher/Mod.kt` |
 | `rt.mod` | `rt.Mod` | 0 | `rt/mod.rs` | `rt/Mod.kt` |
 | `json.mod` | `stream.json.Mod` | 0 | `stream/json/mod.rs` | `stream/json/Mod.kt` |
 | `stream.json.stream.mod` | `stream.json.stream.Mod` | 0 | `stream/json/stream/mod.rs` | `stream/json/stream/Mod.kt` |

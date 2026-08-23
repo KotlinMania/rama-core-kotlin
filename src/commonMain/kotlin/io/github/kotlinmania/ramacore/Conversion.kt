@@ -80,6 +80,14 @@ public class RamaResult<out T, out E> private constructor(
     }
 }
 
+/** Transform the success value of [this] using [transform]. */
+public inline fun <T : Any, E : Any, R : Any> RamaResult<T, E>.map(transform: (T) -> R): RamaResult<R, E> =
+    if (isSuccess()) RamaResult.ok(transform(value!!)) else RamaResult.err(error!!)
+
+/** Transform the error value of [this] using [transform]. */
+public inline fun <T : Any, E : Any, F : Any> RamaResult<T, E>.mapErr(transform: (E) -> F): RamaResult<T, F> =
+    if (isFailure()) RamaResult.err(transform(error!!)) else RamaResult.ok(value!!)
+
 /**
  * Alternative for fallible construction/conversion which can be implemented by external
  * modules for external types.

@@ -167,7 +167,16 @@ public fun parseUsernameWithSeparator(
     usernameRef: String,
     separator: Char,
 ): RamaResult<String, String> {
-    val labels = usernameRef.split(separator)
+    val labels = mutableListOf<String>()
+    var start = 0
+    for (i in 0 until usernameRef.length) {
+        if (usernameRef[i] == separator) {
+            labels.add(usernameRef.substring(start, i))
+            start = i + 1
+        }
+    }
+    labels.add(usernameRef.substring(start))
+
     val username = labels.firstOrNull() ?: return RamaResult.err("missing username")
     if (username.isEmpty()) {
         return RamaResult.err("empty username")
