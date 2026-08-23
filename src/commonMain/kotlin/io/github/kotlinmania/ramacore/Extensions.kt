@@ -39,12 +39,6 @@ public class Extensions {
 
     /**
      * Insert [value] into this store under its runtime type [T].
-     *
-     * Upstream Rust bounds this on `T: Clone + Send + Sync + Debug +
-     * 'static`. Send/Sync/'static guarantee thread-safety and lifetime in
-     * Rust; Kotlin has no equivalent borrow-checked ownership system, so
-     * the bound collapses to `T : Any`. Debug is satisfied by Kotlin's
-     * universal [toString].
      */
     public inline fun <reified T : Any> insert(value: T): Extensions {
         insertErased(T::class, value)
@@ -146,69 +140,63 @@ internal class ExtensionsAsRef(
 }
 
 /**
- * Treat this [Extensions] store as an [ExtensionsMut]. Upstream Rust gets
- * this via blanket `impl ExtensionsRef for Extensions` / `impl
- * ExtensionsMut for Extensions`; Kotlin doesn't allow methods that
- * "implement an interface on a class from outside the class", so we
- * provide a thin wrapper view that delegates back to the same store.
+ * Treat this [Extensions] store as an [ExtensionsMut].
  */
 public fun Extensions.asExtensionsRef(): ExtensionsMut = ExtensionsAsRef(this)
 
-// The upstream Rust file also defines blanket impls of ExtensionsRef and
-// ExtensionsMut for `&T`, `&mut T`, `Box<T>`, `Pin<Box<T>>`, and `Arc<T>`
-// wrappers. Those wrappers are part of Rust's ownership/borrow machinery
-// (shared-borrow, exclusive-borrow, heap-pinning, atomic refcounting); none
-// of them have a direct Kotlin equivalent, since Kotlin object references
-// are already always shared, mutable, and heap-allocated. Callers that
-// would have wrapped a value in Box/Arc/Pin in Rust simply use the value
-// directly in Kotlin, and the trait is already implemented on the value.
+/**
+ * Common interface for chained extension stores.
+ */
+public interface ChainableExtensions {
+    public fun containsType(typeId: KClass<*>): Boolean
 
-// Upstream Rust also uses an `impl_extensions_either!` macro to derive
-// `ExtensionsRef`/`ExtensionsMut` for `Either1`..`Either9` combinator
-// variants whose payloads implement the trait. Kotlin's `Either*` sealed
-// hierarchies already drop the upstream blanket trait impls (see
-// combinators/Either.kt); the same applies here — code that needs an
-// Extensions view from an Either variant can pattern-match on the variant
-// and call `.extensions()` on the payload directly.
+    public fun getType(typeId: KClass<*>): Any?
+}
 
 /**
- * Two stores chained for [contains] / [get] lookups: the first store wins
- * if both contain the requested type.
- *
- * Upstream Rust expresses this as `impl ChainableExtensions for (S, T)`
- * via the tuple type itself; Kotlin has no arbitrary-arity tuples and
- * exposing a `Pair<A, B>` in the public API would leak `kotlin.Pair`
- * (per workspace Swift Export rules a forbidden public surface), so the
- * pair is wrapped in a named class.
+ * Two stores chained for lookups: the first store wins if both contain the requested type.
  */
 public class ChainableExtensionsPair(
     public val first: ExtensionsRef,
     public val second: ExtensionsRef,
-) {
-    public inline fun <reified I : Any> contains(): Boolean =
-        first.extensions().contains<I>() || second.extensions().contains<I>()
+) : ChainableExtensions {
+    override fun containsType(typeId: KClass<*>): Boolean =
+        first.extensions().containsErased(typeId) || second.extensions().containsErased(typeId)
 
-    public inline fun <reified I : Any> get(): I? =
-        first.extensions().get<I>() ?: second.extensions().get<I>()
+    override fun getType(typeId: KClass<*>): Any? =
+        first.extensions().getErased(typeId) ?: second.extensions().getErased(typeId)
+
+    public inline fun <reified I : Any> contains(): Boolean = containsType(I::class)
+
+    public inline fun <reified I : Any> get(): I? {
+        val raw = getType(I::class) ?: return null
+        return raw as I
+    }
 }
 
 /**
- * Three stores chained for [contains] / [get] lookups: stores are
- * consulted left-to-right and the first match wins.
+ * Three stores chained for lookups: stores are consulted left-to-right and the first match wins.
  */
 public class ChainableExtensionsTriple(
     public val first: ExtensionsRef,
     public val second: ExtensionsRef,
     public val third: ExtensionsRef,
-) {
-    public inline fun <reified I : Any> contains(): Boolean =
-        ChainableExtensionsPair(first, second).contains<I>() ||
-            third.extensions().contains<I>()
+) : ChainableExtensions {
+    override fun containsType(typeId: KClass<*>): Boolean =
+        ChainableExtensionsPair(first, second).containsType(typeId) ||
+            third.extensions().containsErased(typeId)
 
-    public inline fun <reified I : Any> get(): I? =
-        first.extensions().get<I>()
-            ?: second.extensions().get<I>()
-            ?: third.extensions().get<I>()
+    override fun getType(typeId: KClass<*>): Any? =
+        first.extensions().getErased(typeId)
+            ?: second.extensions().getErased(typeId)
+            ?: third.extensions().getErased(typeId)
+
+    public inline fun <reified I : Any> contains(): Boolean = containsType(I::class)
+
+    public inline fun <reified I : Any> get(): I? {
+        val raw = getType(I::class) ?: return null
+        return raw as I
+    }
 }
 
 /**
