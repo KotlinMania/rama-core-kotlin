@@ -72,7 +72,7 @@ public fun <Input> Matcher<Input>?.matches(ext: Extensions?, input: Input): Bool
 /**
  * Matcher implementation for [Either].
  */
-public fun <Input, A : Matcher<Input>, B : Matcher<Input>> Either<A, B>.matches(
+public fun <Input> Either<Matcher<Input>, Matcher<Input>>.matches(
     ext: Extensions?,
     input: Input,
 ): Boolean =
@@ -84,7 +84,7 @@ public fun <Input, A : Matcher<Input>, B : Matcher<Input>> Either<A, B>.matches(
 /**
  * Matcher implementation for [Either3].
  */
-public fun <Input, A : Matcher<Input>, B : Matcher<Input>, C : Matcher<Input>> Either3<A, B, C>.matches(
+public fun <Input> Either3<Matcher<Input>, Matcher<Input>, Matcher<Input>>.matches(
     ext: Extensions?,
     input: Input,
 ): Boolean =
@@ -97,7 +97,7 @@ public fun <Input, A : Matcher<Input>, B : Matcher<Input>, C : Matcher<Input>> E
 /**
  * Matcher implementation for [Either4].
  */
-public fun <Input, A : Matcher<Input>, B : Matcher<Input>, C : Matcher<Input>, D : Matcher<Input>> Either4<A, B, C, D>.matches(
+public fun <Input> Either4<Matcher<Input>, Matcher<Input>, Matcher<Input>, Matcher<Input>>.matches(
     ext: Extensions?,
     input: Input,
 ): Boolean =
@@ -109,20 +109,28 @@ public fun <Input, A : Matcher<Input>, B : Matcher<Input>, C : Matcher<Input>, D
     }
 
 /**
+ * A route mapping a [Matcher] to a target [Service].
+ */
+public data class MatchRoute<Input, Output : Any, Error : Any>(
+    public val matcher: Matcher<Input>,
+    public val service: Service<Input, Output, Error>,
+)
+
+/**
  * Router that routes incoming inputs to services based on matcher predicates.
  */
 public class MatcherRouter<Input, Output : Any, Error : Any>(
-    public val routes: List<Pair<Matcher<Input>, Service<Input, Output, Error>>>,
+    public val routes: List<MatchRoute<Input, Output, Error>>,
     public val fallback: Service<Input, Output, Error>,
 ) : Service<Input, Output, Error> {
     override suspend fun serve(input: Input): RamaResult<Output, Error> {
-        for ((matcher, service) in routes) {
+        for (route in routes) {
             val innerExt = Extensions()
-            if (matcher.matches(innerExt, input)) {
+            if (route.matcher.matches(innerExt, input)) {
                 if (input is ExtensionsMut) {
                     input.extensionsMut().extend(innerExt)
                 }
-                return service.serve(input)
+                return route.service.serve(input)
             }
         }
         return fallback.serve(input)
@@ -132,7 +140,7 @@ public class MatcherRouter<Input, Output : Any, Error : Any>(
 
     public companion object {
         public fun <Input, Output : Any, Error : Any> new(
-            routes: List<Pair<Matcher<Input>, Service<Input, Output, Error>>>,
+            routes: List<MatchRoute<Input, Output, Error>>,
             fallback: Service<Input, Output, Error>,
         ): MatcherRouter<Input, Output, Error> = MatcherRouter(routes, fallback)
     }

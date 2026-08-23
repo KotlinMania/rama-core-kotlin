@@ -37,7 +37,7 @@ class LimitTest {
         val g3 = counter.tryAccess()
         assertTrue(g3.isFailure)
 
-        g1.getOrNull()?.release()
+        g1.getOrNull()?.releaseGuard()
 
         val g4 = counter.tryAccess()
         assertTrue(g4.isSuccess)
@@ -47,7 +47,7 @@ class LimitTest {
     fun testConcurrentPolicyLimit() =
         runTest {
             val baseSvc =
-                serviceFn<Int, String, LimitReached> { input ->
+                serviceFn<Int, String, LimitReached> { input: Int ->
                     RamaResult.ok("Result: $input")
                 }
             val policy = ConcurrentPolicy.max<Int>(1)
@@ -60,7 +60,7 @@ class LimitTest {
             val res = limitedSvc.serve(10)
             assertTrue(res.isFailure())
 
-            g1.getOrNull()?.release()
+            g1.getOrNull()?.releaseGuard()
 
             // With capacity released, serve should succeed
             val res2 = limitedSvc.serve(20)

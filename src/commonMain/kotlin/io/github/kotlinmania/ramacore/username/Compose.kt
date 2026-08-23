@@ -60,7 +60,7 @@ public class Composer(
 /**
  * A type that can write itself as label(s) to compose into a username with labels.
  */
-public fun interface UsernameLabelWriter {
+public interface UsernameLabelWriter {
     /**
      * Write all labels into the given composer.
      */
@@ -96,28 +96,35 @@ public fun composeUsernameWithSeparator(
  * Create a [UsernameLabelWriter] from a list of label writers.
  */
 public fun listLabelWriter(writers: List<UsernameLabelWriter>): UsernameLabelWriter =
-    UsernameLabelWriter { composer ->
-        for (writer in writers) {
-            val res = writer.writeLabels(composer)
-            if (res.isFailure()) return@UsernameLabelWriter res
+    object : UsernameLabelWriter {
+        override fun writeLabels(composer: Composer): RamaResult<Unit, ComposeError> {
+            for (writer in writers) {
+                val res = writer.writeLabels(composer)
+                if (res.isFailure()) return res
+            }
+            return RamaResult.ok(Unit)
         }
-        RamaResult.ok(Unit)
     }
 
 /**
  * Create a [UsernameLabelWriter] from a single string label.
  */
 public fun stringLabelWriter(label: String): UsernameLabelWriter =
-    UsernameLabelWriter { composer -> composer.writeLabel(label) }
+    object : UsernameLabelWriter {
+        override fun writeLabels(composer: Composer): RamaResult<Unit, ComposeError> =
+            composer.writeLabel(label)
+    }
 
 /**
  * Create a [UsernameLabelWriter] from [UsernameLabels].
  */
 public fun UsernameLabels.asWriter(): UsernameLabelWriter =
-    UsernameLabelWriter { composer ->
-        for (label in labels) {
-            val res = composer.writeLabel(label)
-            if (res.isFailure()) return@UsernameLabelWriter res
+    object : UsernameLabelWriter {
+        override fun writeLabels(composer: Composer): RamaResult<Unit, ComposeError> {
+            for (label in labels) {
+                val res = composer.writeLabel(label)
+                if (res.isFailure()) return res
+            }
+            return RamaResult.ok(Unit)
         }
-        RamaResult.ok(Unit)
     }

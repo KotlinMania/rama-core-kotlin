@@ -10,10 +10,10 @@ import io.github.kotlinmania.ramacore.service.Service
 /**
  * Middleware to hijack requests to a service when they match a [Matcher].
  */
-public class HijackService<Input, Output : Any, Error : Any, S : Service<Input, Output, Error>, H : Service<Input, Output, Error>, M : Matcher<Input>>(
-    public val inner: S,
-    public val hijack: H,
-    public val matcher: M,
+public class HijackService<Input, Output : Any, Error : Any>(
+    public val inner: Service<Input, Output, Error>,
+    public val hijack: Service<Input, Output, Error>,
+    public val matcher: Matcher<Input>,
 ) : Service<Input, Output, Error> {
     override suspend fun serve(input: Input): RamaResult<Output, Error> {
         val ext = Extensions()
@@ -29,11 +29,11 @@ public class HijackService<Input, Output : Any, Error : Any, S : Service<Input, 
     override fun toString(): String = "HijackService($inner, $hijack, $matcher)"
 
     public companion object {
-        public fun <Input, Output : Any, Error : Any, S : Service<Input, Output, Error>, H : Service<Input, Output, Error>, M : Matcher<Input>> new(
-            inner: S,
-            hijack: H,
-            matcher: M,
-        ): HijackService<Input, Output, Error, S, H, M> =
+        public fun <Input, Output : Any, Error : Any> new(
+            inner: Service<Input, Output, Error>,
+            hijack: Service<Input, Output, Error>,
+            matcher: Matcher<Input>,
+        ): HijackService<Input, Output, Error> =
             HijackService(inner, hijack, matcher)
     }
 }
@@ -41,21 +41,21 @@ public class HijackService<Input, Output : Any, Error : Any, S : Service<Input, 
 /**
  * Layer to hijack requests when matching a [Matcher].
  */
-public class HijackLayer<Input, Output : Any, Error : Any, H : Service<Input, Output, Error>, M : Matcher<Input>>(
-    public val matcher: M,
-    public val hijack: H,
-) : Layer<Service<Input, Output, Error>, HijackService<Input, Output, Error, Service<Input, Output, Error>, H, M>> {
+public class HijackLayer<Input, Output : Any, Error : Any>(
+    public val matcher: Matcher<Input>,
+    public val hijack: Service<Input, Output, Error>,
+) : Layer<Service<Input, Output, Error>, HijackService<Input, Output, Error>> {
     override fun layer(
         inner: Service<Input, Output, Error>,
-    ): HijackService<Input, Output, Error, Service<Input, Output, Error>, H, M> =
+    ): HijackService<Input, Output, Error> =
         HijackService(inner, hijack, matcher)
 
     override fun toString(): String = "HijackLayer($matcher, $hijack)"
 
     public companion object {
-        public fun <Input, Output : Any, Error : Any, H : Service<Input, Output, Error>, M : Matcher<Input>> new(
-            matcher: M,
-            hijack: H,
-        ): HijackLayer<Input, Output, Error, H, M> = HijackLayer(matcher, hijack)
+        public fun <Input, Output : Any, Error : Any> new(
+            matcher: Matcher<Input>,
+            hijack: Service<Input, Output, Error>,
+        ): HijackLayer<Input, Output, Error> = HijackLayer(matcher, hijack)
     }
 }

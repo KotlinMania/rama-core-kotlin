@@ -1,4 +1,4 @@
-import XCTest
+import Testing
 import RamaCore
 
 // Smoke test for the Kotlin → Swift Export → SPM → swift test pipeline.
@@ -28,8 +28,10 @@ import RamaCore
 // Add more meaningful per-API tests below as the Swift Export surface
 // grows. For now the import + a single passing assertion is the
 // canary that the pipeline is green for this repo.
-final class RamaCoreExportTests: XCTestCase {
-    func testSwiftModuleLoads() throws {
-        XCTAssertTrue(true, "RamaCore swift module imported cleanly")
+@Suite("RamaCore Swift Export Smoke Tests")
+struct RamaCoreExportTests {
+    @Test("RamaCore swift module imported cleanly")
+    func testSwiftModuleLoads() {
+        #expect(Bool(true))
     }
 }

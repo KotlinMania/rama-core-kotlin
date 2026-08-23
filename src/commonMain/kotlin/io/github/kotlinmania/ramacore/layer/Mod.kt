@@ -22,9 +22,9 @@ public fun interface Layer<in S, out OutS> {
 /**
  * Two layers composed together into a stack.
  */
-public class Stack<Inner : Layer<S, Mid>, Outer : Layer<Mid, Out>, S, Mid, Out>(
-    public val inner: Inner,
-    public val outer: Outer,
+public class Stack<S, Mid, Out>(
+    public val inner: Layer<S, Mid>,
+    public val outer: Layer<Mid, Out>,
 ) : Layer<S, Out> {
     override fun layer(inner: S): Out = outer.layer(this.inner.layer(inner))
 
@@ -36,9 +36,9 @@ public class Stack<Inner : Layer<S, Mid>, Outer : Layer<Mid, Out>, S, Mid, Out>(
 /**
  * Compose this layer with an [outer] layer.
  */
-public fun <Inner : Layer<S, Mid>, Outer : Layer<Mid, Out>, S, Mid, Out> Inner.andThen(
-    outer: Outer,
-): Stack<Inner, Outer, S, Mid, Out> = Stack(this, outer)
+public fun <S, Mid, Out> Layer<S, Mid>.andThen(
+    outer: Layer<Mid, Out>,
+): Stack<S, Mid, Out> = Stack(this, outer)
 
 /**
  * A [Service] created by wrapping a service with an optional [Layer].
@@ -54,8 +54,8 @@ public class MaybeLayeredService<Input, Output : Any, Error : Any>(
 /**
  * Apply this optional layer to [inner] service.
  */
-public fun <S : Service<Input, Output, Error>, OutS : Service<Input, Output, Error>, Input, Output : Any, Error : Any> Layer<S, OutS>?.layerOptional(
-    inner: S,
+public fun <Input, Output : Any, Error : Any> Layer<Service<Input, Output, Error>, Service<Input, Output, Error>>?.layerOptional(
+    inner: Service<Input, Output, Error>,
 ): Service<Input, Output, Error> =
     if (this != null) {
         MaybeLayeredService(this.layer(inner))
