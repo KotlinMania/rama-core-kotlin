@@ -1,29 +1,9 @@
 // port-lint: source combinators/either.rs
 package io.github.kotlinmania.ramacore.combinators
 
-// The upstream Rust file uses three `macro_rules!` macros to define the
-// `Either`..`Either9` data types and to generate blanket trait impls
-// (Iterator, AsyncRead, AsyncWrite, Future) for the available number of type
-// parameters. Kotlin does not have user-defined macros, conditional generic
-// trait impls, or the tokio AsyncRead/AsyncWrite traits, so the macro
-// machinery has no Kotlin analog and is dropped. What remains is the data
-// type itself: a sealed interface with one variant per type parameter,
-// mirroring the Rust enum shape one-for-one.
-//
-// Iterator, Future, AsyncRead, and AsyncWrite blanket impls from upstream are
-// not translated: Kotlin's Iterator and the coroutine machinery are
-// implemented by concrete types rather than by generic where-bounded blanket
-// impls, and there is no kotlinx equivalent of tokio AsyncRead/AsyncWrite at
-// commonMain. Code that needs Iterator-of-Either-of-Iterators or
-// future-of-Either-of-futures can `when (e) { ... }` against the variant
-// directly at the use site.
-
 /**
- * A type to allow you to use multiple types as a single type.
- *
- * and will delegate the functionality to the type that is wrapped in the
- * `Either` type. To keep it easy all wrapped types are expected to work with
- * the same inputs and outputs.
+ * A type to allow you to use multiple types as a single type,
+ * delegating functionality to the wrapped type.
  */
 public sealed interface Either<out A, out B> {
     public class A<T>(
