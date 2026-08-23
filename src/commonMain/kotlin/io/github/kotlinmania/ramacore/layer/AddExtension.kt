@@ -13,18 +13,21 @@ public class AddInputExtensionLayer<T : Any>(
     public val valueType: KClass<T>,
     public val value: T,
 ) {
-    public fun <Input : ExtensionsMut, Output : Any, Error : Any, S : Service<Input, Output, Error>> layer(
-        inner: S,
-    ): AddInputExtension<Input, Output, Error, S, T> =
+    public fun <Input : ExtensionsMut, Output : Any, Error : Any> layer(
+        inner: Service<Input, Output, Error>,
+    ): AddInputExtension<Input, Output, Error, T> =
         AddInputExtension(inner, valueType, value)
 
-    public fun <Input : ExtensionsMut, Output : Any, Error : Any, S : Service<Input, Output, Error>> intoLayer(
-        inner: S,
-    ): AddInputExtension<Input, Output, Error, S, T> = layer(inner)
+    public fun <Input : ExtensionsMut, Output : Any, Error : Any> intoLayer(
+        inner: Service<Input, Output, Error>,
+    ): AddInputExtension<Input, Output, Error, T> = layer(inner)
 
     override fun toString(): String = "AddInputExtensionLayer($value)"
 
     public companion object {
+        public fun <T : Any> of(valueType: KClass<T>, value: T): AddInputExtensionLayer<T> =
+            AddInputExtensionLayer(valueType, value)
+
         public inline fun <reified T : Any> new(value: T): AddInputExtensionLayer<T> =
             AddInputExtensionLayer(T::class, value)
     }
@@ -33,8 +36,8 @@ public class AddInputExtensionLayer<T : Any>(
 /**
  * Middleware for adding a value to incoming input's extensions.
  */
-public class AddInputExtension<Input : ExtensionsMut, Output : Any, Error : Any, S : Service<Input, Output, Error>, T : Any>(
-    public val inner: S,
+public class AddInputExtension<Input : ExtensionsMut, Output : Any, Error : Any, T : Any>(
+    public val inner: Service<Input, Output, Error>,
     public val valueType: KClass<T>,
     public val value: T,
 ) : Service<Input, Output, Error> {
@@ -46,10 +49,17 @@ public class AddInputExtension<Input : ExtensionsMut, Output : Any, Error : Any,
     override fun toString(): String = "AddInputExtension($inner, $value)"
 
     public companion object {
-        public inline fun <Input : ExtensionsMut, Output : Any, Error : Any, S : Service<Input, Output, Error>, reified T : Any> new(
-            inner: S,
+        public fun <Input : ExtensionsMut, Output : Any, Error : Any, T : Any> of(
+            inner: Service<Input, Output, Error>,
+            valueType: KClass<T>,
             value: T,
-        ): AddInputExtension<Input, Output, Error, S, T> =
+        ): AddInputExtension<Input, Output, Error, T> =
+            AddInputExtension(inner, valueType, value)
+
+        public inline fun <Input : ExtensionsMut, Output : Any, Error : Any, reified T : Any> new(
+            inner: Service<Input, Output, Error>,
+            value: T,
+        ): AddInputExtension<Input, Output, Error, T> =
             AddInputExtension(inner, T::class, value)
     }
 }
@@ -61,18 +71,21 @@ public class AddOutputExtensionLayer<T : Any>(
     public val valueType: KClass<T>,
     public val value: T,
 ) {
-    public fun <Input, Output : ExtensionsMut, Error : Any, S : Service<Input, Output, Error>> layer(
-        inner: S,
-    ): AddOutputExtension<Input, Output, Error, S, T> =
+    public fun <Input, Output : ExtensionsMut, Error : Any> layer(
+        inner: Service<Input, Output, Error>,
+    ): AddOutputExtension<Input, Output, Error, T> =
         AddOutputExtension(inner, valueType, value)
 
-    public fun <Input, Output : ExtensionsMut, Error : Any, S : Service<Input, Output, Error>> intoLayer(
-        inner: S,
-    ): AddOutputExtension<Input, Output, Error, S, T> = layer(inner)
+    public fun <Input, Output : ExtensionsMut, Error : Any> intoLayer(
+        inner: Service<Input, Output, Error>,
+    ): AddOutputExtension<Input, Output, Error, T> = layer(inner)
 
     override fun toString(): String = "AddOutputExtensionLayer($value)"
 
     public companion object {
+        public fun <T : Any> of(valueType: KClass<T>, value: T): AddOutputExtensionLayer<T> =
+            AddOutputExtensionLayer(valueType, value)
+
         public inline fun <reified T : Any> new(value: T): AddOutputExtensionLayer<T> =
             AddOutputExtensionLayer(T::class, value)
     }
@@ -81,8 +94,8 @@ public class AddOutputExtensionLayer<T : Any>(
 /**
  * Middleware for adding a value to an output's extensions.
  */
-public class AddOutputExtension<Input, Output : ExtensionsMut, Error : Any, S : Service<Input, Output, Error>, T : Any>(
-    public val inner: S,
+public class AddOutputExtension<Input, Output : ExtensionsMut, Error : Any, T : Any>(
+    public val inner: Service<Input, Output, Error>,
     public val valueType: KClass<T>,
     public val value: T,
 ) : Service<Input, Output, Error> {
@@ -97,10 +110,17 @@ public class AddOutputExtension<Input, Output : ExtensionsMut, Error : Any, S : 
     override fun toString(): String = "AddOutputExtension($inner, $value)"
 
     public companion object {
-        public inline fun <Input, Output : ExtensionsMut, Error : Any, S : Service<Input, Output, Error>, reified T : Any> new(
-            inner: S,
+        public fun <Input, Output : ExtensionsMut, Error : Any, T : Any> of(
+            inner: Service<Input, Output, Error>,
+            valueType: KClass<T>,
             value: T,
-        ): AddOutputExtension<Input, Output, Error, S, T> =
+        ): AddOutputExtension<Input, Output, Error, T> =
+            AddOutputExtension(inner, valueType, value)
+
+        public inline fun <Input, Output : ExtensionsMut, Error : Any, reified T : Any> new(
+            inner: Service<Input, Output, Error>,
+            value: T,
+        ): AddOutputExtension<Input, Output, Error, T> =
             AddOutputExtension(inner, T::class, value)
     }
 }

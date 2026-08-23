@@ -12,14 +12,14 @@ class HandlerTest {
     fun testServiceFn() =
         runSync {
             val s1 =
-                serviceFn<String, String, Nothing> { req ->
+                serviceFn<String, String, Nothing> { req: String ->
                     assertEquals("hello", req)
                     RamaResult.ok("world")
                 }.boxed()
 
             val res = s1.serve("hello")
             assertTrue(res.isSuccess())
-            assertEquals("world", res.getOrNull())
+            assertEquals("world", res.value)
         }
 
     @Test
@@ -32,6 +32,6 @@ class HandlerTest {
 
             val res = s.serve(Unit)
             assertTrue(res.isSuccess())
-            assertEquals("zero-arg", res.getOrNull())
+            assertEquals("zero-arg", res.value)
         }
 }

@@ -13,12 +13,19 @@ public enum class TraceLevel {
 }
 
 /**
+ * Callback for handling errors in [TraceErr].
+ */
+public interface TraceErrCallback<in Error> {
+    public operator fun invoke(error: Error, level: TraceLevel)
+}
+
+/**
  * Service that traces / logs errors of the inner [Service].
  */
-public class TraceErr<Input, Output : Any, Error : Any, S : Service<Input, Output, Error>>(
-    public val inner: S,
+public class TraceErr<Input, Output : Any, Error : Any>(
+    public val inner: Service<Input, Output, Error>,
     public val level: TraceLevel = TraceLevel.ERROR,
-    public val onErr: ((Error, TraceLevel) -> Unit)? = null,
+    private val onErr: TraceErrCallback<Error>? = null,
 ) : Service<Input, Output, Error> {
     override suspend fun serve(input: Input): RamaResult<Output, Error> {
         val res = inner.serve(input)
@@ -31,30 +38,55 @@ public class TraceErr<Input, Output : Any, Error : Any, S : Service<Input, Outpu
     override fun toString(): String = "TraceErr($inner, $level)"
 
     public companion object {
-        public fun <Input, Output : Any, Error : Any, S : Service<Input, Output, Error>> new(
-            inner: S,
+        public fun <Input, Output : Any, Error : Any> new(
+            inner: Service<Input, Output, Error>,
             level: TraceLevel = TraceLevel.ERROR,
-            onErr: ((Error, TraceLevel) -> Unit)? = null,
-        ): TraceErr<Input, Output, Error, S> = TraceErr(inner, level, onErr)
+            onErr: TraceErrCallback<Error>? = null,
+        ): TraceErr<Input, Output, Error> = TraceErr(inner, level, onErr)
+
+        public inline fun <Input, Output : Any, Error : Any> of(
+            inner: Service<Input, Output, Error>,
+            level: TraceLevel = TraceLevel.ERROR,
+            crossinline onErr: (Error, TraceLevel) -> Unit,
+        ): TraceErr<Input, Output, Error> =
+            TraceErr(
+                inner,
+                level,
+                object : TraceErrCallback<Error> {
+                    override fun invoke(error: Error, level: TraceLevel) = onErr(error, level)
+                },
+            )
     }
 }
 
 /**
  * [Layer] that produces [TraceErr] services.
  */
-public class TraceErrLayer<Input, Output : Any, Error : Any, S : Service<Input, Output, Error>>(
+public class TraceErrLayer<Input, Output : Any, Error : Any>(
     public val level: TraceLevel = TraceLevel.ERROR,
-    public val onErr: ((Error, TraceLevel) -> Unit)? = null,
-) : Layer<S, TraceErr<Input, Output, Error, S>> {
-    override fun layer(inner: S): TraceErr<Input, Output, Error, S> =
+    private val onErr: TraceErrCallback<Error>? = null,
+) : Layer<Service<Input, Output, Error>, TraceErr<Input, Output, Error>> {
+    override fun layer(inner: Service<Input, Output, Error>): TraceErr<Input, Output, Error> =
         TraceErr(inner, level, onErr)
 
     override fun toString(): String = "TraceErrLayer($level)"
 
     public companion object {
-        public fun <Input, Output : Any, Error : Any, S : Service<Input, Output, Error>> new(
+        public fun <Input, Output : Any, Error : Any> new(
             level: TraceLevel = TraceLevel.ERROR,
-            onErr: ((Error, TraceLevel) -> Unit)? = null,
-        ): TraceErrLayer<Input, Output, Error, S> = TraceErrLayer(level, onErr)
+            onErr: TraceErrCallback<Error>? = null,
+        ): TraceErrLayer<Input, Output, Error> = TraceErrLayer(level, onErr)
+
+        public inline fun <Input, Output : Any, Error : Any> of(
+            level: TraceLevel = TraceLevel.ERROR,
+            crossinline onErr: (Error, TraceLevel) -> Unit,
+        ): TraceErrLayer<Input, Output, Error> =
+            TraceErrLayer(
+                level,
+                object : TraceErrCallback<Error> {
+                    override fun invoke(error: Error, level: TraceLevel) = onErr(error, level)
+                },
+            )
     }
 }
+

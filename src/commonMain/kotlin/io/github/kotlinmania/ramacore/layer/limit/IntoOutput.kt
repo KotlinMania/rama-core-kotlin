@@ -6,7 +6,7 @@ import io.github.kotlinmania.ramacore.RamaResult
 /**
  * Adapter to transform a limit policy error into a service result.
  */
-public fun interface ErrorIntoOutput<in PolicyError : Any, Output : Any, Error : Any> {
+public interface ErrorIntoOutput<in PolicyError : Any, Output : Any, Error : Any> {
     public fun errorIntoOutput(error: PolicyError): RamaResult<Output, Error>
 }
 
@@ -14,15 +14,16 @@ public fun interface ErrorIntoOutput<in PolicyError : Any, Output : Any, Error :
  * Function wrapper for [ErrorIntoOutput].
  */
 public class ErrorIntoOutputFn<PolicyError : Any, Output : Any, Error : Any>(
-    private val fn: (PolicyError) -> RamaResult<Output, Error>,
+    private val delegate: ErrorIntoOutput<PolicyError, Output, Error>,
 ) : ErrorIntoOutput<PolicyError, Output, Error> {
-    override fun errorIntoOutput(error: PolicyError): RamaResult<Output, Error> = fn(error)
+    override fun errorIntoOutput(error: PolicyError): RamaResult<Output, Error> =
+        delegate.errorIntoOutput(error)
 
     override fun toString(): String = "ErrorIntoOutputFn"
 
     public companion object {
         public fun <PolicyError : Any, Output : Any, Error : Any> new(
-            fn: (PolicyError) -> RamaResult<Output, Error>,
-        ): ErrorIntoOutputFn<PolicyError, Output, Error> = ErrorIntoOutputFn(fn)
+            delegate: ErrorIntoOutput<PolicyError, Output, Error>,
+        ): ErrorIntoOutputFn<PolicyError, Output, Error> = ErrorIntoOutputFn(delegate)
     }
 }

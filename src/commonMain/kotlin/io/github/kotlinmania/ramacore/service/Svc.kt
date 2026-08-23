@@ -14,7 +14,7 @@ import io.github.kotlinmania.ramacore.combinators.Either9
 /**
  * A [Service] that produces rama services to serve given an input.
  */
-public fun interface Service<in Input, out Output : Any, out Error : Any> {
+public interface Service<in Input, out Output : Any, out Error : Any> {
     /**
      * Serve an output or error for the given input.
      */

@@ -6,20 +6,28 @@ import io.github.kotlinmania.ramacore.ExtensionsMut
 import io.github.kotlinmania.ramacore.matcher.Matcher
 
 /**
+ * A route mapping a [Matcher] to a target [Policy].
+ */
+public data class MatcherPolicyRoute<Input, Guard, Error : Any>(
+    public val matcher: Matcher<Input>,
+    public val policy: Policy<Input, Guard, Error>,
+)
+
+/**
  * A policy map that applies a [Policy] based on a [Matcher].
  */
 public class MatcherPolicyMap<Input, Guard, Error : Any>(
-    public val routes: List<Pair<Matcher<Input>, Policy<Input, Guard, Error>>>,
+    public val routes: List<MatcherPolicyRoute<Input, Guard, Error>>,
     public val defaultPolicy: Policy<Input, Guard, Error>? = null,
 ) : Policy<Input, Guard?, Error> {
     override suspend fun check(input: Input): PolicyResult<Input, Guard?, Error> {
-        for ((matcher, policy) in routes) {
+        for (route in routes) {
             val ext = Extensions()
-            if (matcher.matches(ext, input)) {
+            if (route.matcher.matches(ext, input)) {
                 if (input is ExtensionsMut) {
                     input.extensionsMut().extend(ext)
                 }
-                val res = policy.check(input)
+                val res = route.policy.check(input)
                 return when (val out = res.output) {
                     is PolicyOutput.Ready -> PolicyResult(res.input, PolicyOutput.Ready(out.guard))
                     is PolicyOutput.Abort -> PolicyResult(res.input, PolicyOutput.Abort(out.error))
@@ -43,7 +51,7 @@ public class MatcherPolicyMap<Input, Guard, Error : Any>(
 
     public companion object {
         public fun <Input, Guard, Error : Any> new(
-            routes: List<Pair<Matcher<Input>, Policy<Input, Guard, Error>>>,
+            routes: List<MatcherPolicyRoute<Input, Guard, Error>>,
             defaultPolicy: Policy<Input, Guard, Error>? = null,
         ): MatcherPolicyMap<Input, Guard, Error> = MatcherPolicyMap(routes, defaultPolicy)
     }

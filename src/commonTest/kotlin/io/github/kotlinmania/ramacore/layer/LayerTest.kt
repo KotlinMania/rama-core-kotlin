@@ -39,7 +39,7 @@ class LayerTest {
                 serviceFn<Int, String, String> { input ->
                     RamaResult.ok("Result: $input")
                 }
-            val mappedSvc = MapInput.new(baseSvc) { str: String -> str.toInt() }
+            val mappedSvc = MapInput.of(baseSvc) { str: String -> str.toInt() }
 
             val res = mappedSvc.serve("42")
             assertTrue(res.isSuccess())
@@ -53,7 +53,7 @@ class LayerTest {
                 serviceFn<Int, Int, String> { input ->
                     RamaResult.ok(input * 2)
                 }
-            val mappedSvc = MapOutput.new(baseSvc) { num: Int -> "Doubled: $num" }
+            val mappedSvc = MapOutput.of(baseSvc) { num: Int -> "Doubled: $num" }
 
             val res = mappedSvc.serve(21)
             assertTrue(res.isSuccess())
@@ -67,7 +67,7 @@ class LayerTest {
                 serviceFn<Int, String, Int> { input ->
                     if (input == 0) RamaResult.err(404) else RamaResult.ok("OK")
                 }
-            val mappedSvc = MapErr.new(baseSvc) { code: Int -> "Error code: $code" }
+            val mappedSvc = MapErr.of(baseSvc) { code: Int -> "Error code: $code" }
 
             val res = mappedSvc.serve(0)
             assertTrue(res.isFailure())
@@ -82,7 +82,7 @@ class LayerTest {
                     if (input > 0) RamaResult.ok("Positive") else RamaResult.err("Non-positive")
                 }
             val mappedSvc =
-                MapResult.new(baseSvc) { res ->
+                MapResult.of(baseSvc) { res ->
                     if (res.isSuccess()) {
                         RamaResult.ok("Success: ${res.value}")
                     } else {
@@ -182,7 +182,7 @@ class LayerTest {
                     RamaResult.err("Boom")
                 }
             val consumedSvc =
-                ConsumeErr.new(
+                ConsumeErr.of(
                     inner = failingSvc,
                     fallback = { "Fallback Output" },
                     consumer = { err -> errConsumed = err },
@@ -198,10 +198,10 @@ class LayerTest {
     fun testTimeoutSuccess() =
         runTest {
             val slowSvc =
-                serviceFn<Int, String, Elapsed> {
+                serviceFn<Int, String, Elapsed> { _: Int ->
                     RamaResult.ok("Quick Result")
                 }
-            val timeoutSvc = TimeoutLayer.new<Int, String, Service<Int, String, Elapsed>>(500.milliseconds).layer(slowSvc)
+            val timeoutSvc = TimeoutLayer.new<Int, String>(500.milliseconds).layer(slowSvc)
 
             val res = timeoutSvc.serve(1)
             assertTrue(res.isSuccess())
@@ -211,8 +211,8 @@ class LayerTest {
     @Test
     fun testTimeoutElapse() =
         runTest {
-            val slowSvc =
-                serviceFn<Int, String, Elapsed> {
+            val slowSvc: Service<Int, String, Elapsed> =
+                serviceFn { _: Int ->
                     delay(200.milliseconds)
                     RamaResult.ok("Slow Result")
                 }

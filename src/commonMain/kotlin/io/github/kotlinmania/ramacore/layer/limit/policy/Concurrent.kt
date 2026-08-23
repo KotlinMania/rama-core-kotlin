@@ -18,7 +18,7 @@ public class LimitReached : Exception("serve aborted due to exhausted concurrenc
  * Guard that releases the acquired concurrency permit.
  */
 public fun interface ConcurrentGuard {
-    public fun release()
+    public fun releaseGuard()
 }
 
 /**
@@ -41,7 +41,7 @@ public class ConcurrentCounter(
     ) : ConcurrentGuard {
         private var released = false
 
-        override fun release() {
+        override fun releaseGuard() {
             if (!released) {
                 released = true
                 counter.semaphore?.release()
@@ -67,8 +67,8 @@ public class ConcurrentCounter(
 /**
  * A [Policy] that limits the number of concurrent requests.
  */
-public class ConcurrentPolicy<Input, Guard : ConcurrentGuard, Error : Any, C : ConcurrentTracker<Guard, Error>>(
-    public val tracker: C,
+public class ConcurrentPolicy<Input, Guard : ConcurrentGuard, Error : Any>(
+    public val tracker: ConcurrentTracker<Guard, Error>,
 ) : Policy<Input, Guard, Error> {
     override suspend fun check(input: Input): PolicyResult<Input, Guard, Error> {
         val accessResult = tracker.tryAccess()
@@ -87,11 +87,11 @@ public class ConcurrentPolicy<Input, Guard : ConcurrentGuard, Error : Any, C : C
     override fun toString(): String = "ConcurrentPolicy($tracker)"
 
     public companion object {
-        public fun <Input> max(max: Int): ConcurrentPolicy<Input, ConcurrentCounter.Guard, LimitReached, ConcurrentCounter> =
+        public fun <Input> max(max: Int): ConcurrentPolicy<Input, ConcurrentCounter.Guard, LimitReached> =
             ConcurrentPolicy(ConcurrentCounter(max))
 
-        public fun <Input, Guard : ConcurrentGuard, Error : Any, C : ConcurrentTracker<Guard, Error>> new(
-            tracker: C,
-        ): ConcurrentPolicy<Input, Guard, Error, C> = ConcurrentPolicy(tracker)
+        public fun <Input, Guard : ConcurrentGuard, Error : Any> new(
+            tracker: ConcurrentTracker<Guard, Error>,
+        ): ConcurrentPolicy<Input, Guard, Error> = ConcurrentPolicy(tracker)
     }
 }

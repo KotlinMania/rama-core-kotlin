@@ -9,24 +9,24 @@ import io.github.kotlinmania.ramacore.service.Service
 /**
  * [Layer] for applying a limit [Policy].
  */
-public class LimitLayer<Input, Output : Any, Error : Any, Guard, PolicyError : Any, S : Service<Input, Output, Error>, P : Policy<Input, Guard, PolicyError>>(
-    public val policy: P,
+public class LimitLayer<Input, Output : Any, Error : Any, Guard, PolicyError : Any>(
+    public val policy: Policy<Input, Guard, PolicyError>,
     public val errorIntoOutput: ErrorIntoOutput<PolicyError, Output, Error>? = null,
-    public val policyErrorMapper: ((PolicyError) -> Error)? = null,
-) : Layer<S, Limit<Input, Output, Error, Guard, PolicyError, S, P>> {
-    override fun layer(inner: S): Limit<Input, Output, Error, Guard, PolicyError, S, P> =
+    public val policyErrorMapper: PolicyErrorMapper<PolicyError, Error>? = null,
+) : Layer<Service<Input, Output, Error>, Limit<Input, Output, Error, Guard, PolicyError>> {
+    override fun layer(inner: Service<Input, Output, Error>): Limit<Input, Output, Error, Guard, PolicyError> =
         Limit(inner, policy, errorIntoOutput, policyErrorMapper)
 
     override fun toString(): String = "LimitLayer($policy)"
 
     public companion object {
-        public fun <Input, Output : Any, Error : Any, Guard, PolicyError : Any, S : Service<Input, Output, Error>, P : Policy<Input, Guard, PolicyError>> new(
-            policy: P,
-            policyErrorMapper: ((PolicyError) -> Error)? = null,
-        ): LimitLayer<Input, Output, Error, Guard, PolicyError, S, P> =
+        public fun <Input, Output : Any, Error : Any, Guard, PolicyError : Any> new(
+            policy: Policy<Input, Guard, PolicyError>,
+            policyErrorMapper: PolicyErrorMapper<PolicyError, Error>? = null,
+        ): LimitLayer<Input, Output, Error, Guard, PolicyError> =
             LimitLayer(policy, policyErrorMapper = policyErrorMapper)
 
-        public fun <Input, Output : Any, Error : Any, S : Service<Input, Output, Error>> unlimited(): LimitLayer<Input, Output, Error, Unit, Nothing, S, UnlimitedPolicy<Input>> =
+        public fun <Input, Output : Any, Error : Any> unlimited(): LimitLayer<Input, Output, Error, Unit, Nothing> =
             LimitLayer(UnlimitedPolicy.instance())
     }
 }
