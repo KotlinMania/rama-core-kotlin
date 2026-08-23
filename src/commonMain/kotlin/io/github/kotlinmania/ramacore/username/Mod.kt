@@ -2,11 +2,16 @@
 package io.github.kotlinmania.ramacore.username
 
 /**
- * The default username label separator used by rama support.
+ * Utilities to work with usernames and pull information out of it.
+ *
+ * Provides username parsing ([parseUsername], [parseUsernameWithSeparator])
+ * and username composing ([composeUsername], [composeUsernameWithSeparator]).
  */
 public const val DEFAULT_USERNAME_LABEL_SEPARATOR: Char = '-'
 
 /**
  * Username utilities module ledger.
  */
-internal object UsernameModuleLedger
+internal object UsernameModuleLedger {
+    val defaultSeparator: Char = DEFAULT_USERNAME_LABEL_SEPARATOR
+}
