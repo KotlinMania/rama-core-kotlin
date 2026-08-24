@@ -2,7 +2,6 @@
 package io.github.kotlinmania.ramacore.layer.timeout
 
 import io.github.kotlinmania.ramacore.RamaResult
-import io.github.kotlinmania.ramacore.layer.LayerErrorFn
 import io.github.kotlinmania.ramacore.layer.LayerErrorStatic
 import io.github.kotlinmania.ramacore.layer.MakeLayerError
 import io.github.kotlinmania.ramacore.layer.MapErrTransform
@@ -48,7 +47,9 @@ public class Timeout<Input, Output : Any, InError : Any, OutError : Any>(
                 inner = inner,
                 timeout = timeout,
                 intoError = LayerErrorStatic(Elapsed.new(timeout)),
-                errorMapper = io.github.kotlinmania.ramacore.layer.IdentityMapErrTransform(),
+                errorMapper =
+                    io.github.kotlinmania.ramacore.layer
+                        .IdentityMapErrTransform(),
             )
 
         public fun <Input, Output : Any> never(
@@ -58,7 +59,9 @@ public class Timeout<Input, Output : Any, InError : Any, OutError : Any>(
                 inner = inner,
                 timeout = null,
                 intoError = LayerErrorStatic(Elapsed.new(null)),
-                errorMapper = io.github.kotlinmania.ramacore.layer.IdentityMapErrTransform(),
+                errorMapper =
+                    io.github.kotlinmania.ramacore.layer
+                        .IdentityMapErrTransform(),
             )
 
         public fun <Input, Output : Any, InError : Any, OutError : Any> withError(

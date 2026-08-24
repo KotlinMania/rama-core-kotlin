@@ -145,4 +145,3 @@ public class GetOutputExtension<Input, Output : ExtensionsRef, Error : Any, T : 
             GetOutputExtension(inner, T::class, callback)
     }
 }
-

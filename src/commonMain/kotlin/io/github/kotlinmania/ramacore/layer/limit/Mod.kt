@@ -75,4 +75,3 @@ public class Limit<Input, Output : Any, Error : Any, Guard, PolicyError : Any>(
             Limit(inner, UnlimitedPolicy.instance())
     }
 }
-

@@ -71,4 +71,3 @@ public class MapOutputLayer<Input, InOutput : Any, OutOutput : Any, Error : Any>
             )
     }
 }
-
