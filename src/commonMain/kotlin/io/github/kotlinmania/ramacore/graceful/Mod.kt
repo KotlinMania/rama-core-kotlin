@@ -41,9 +41,11 @@ public interface AsyncTaskHandle<out T> : TaskHandle {
 /**
  * Shutdown manager for graceful shutdown of async-first applications.
  */
-public class Shutdown(
-    private val signal: CompletableDeferred<Unit> = CompletableDeferred(),
+public class Shutdown private constructor(
+    private val signal: CompletableDeferred<Unit>,
 ) {
+    public constructor() : this(CompletableDeferred())
+
     /**
      * Creates a new [ShutdownGuard] associated with this shutdown manager.
      */
@@ -105,8 +107,10 @@ public class ShutdownBuilder(
  */
 public class ShutdownGuard internal constructor(
     private val signal: Deferred<Unit>,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
+    private val scope: CoroutineScope,
 ) {
+    internal constructor(signal: Deferred<Unit>) : this(signal, CoroutineScope(Dispatchers.Default))
+
     private val activeJobs = mutableListOf<Job>()
     private val mutex = Mutex()
 
