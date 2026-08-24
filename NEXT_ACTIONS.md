@@ -5,9 +5,9 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 58/60 (96.7%)
-- **Function parity:** 152/408 matched (target 635) — 37.3%
-- **Class/type parity:** 84/192 matched (target 179) — 43.8%
-- **Combined symbol parity:** 236/600 matched (target 814) — 39.3%
+- **Function parity:** 159/408 matched (target 648) — 39.0%
+- **Class/type parity:** 83/192 matched (target 181) — 43.2%
+- **Combined symbol parity:** 242/600 matched (target 829) — 40.3%
 - **Average inline-code cosine:** 0.26 (function body across 44 matched files)
 - **Average documentation cosine:** 0.57 (doc text across 44 matched files)
 - **Cheat-zeroed Files:** 18
@@ -30,11 +30,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 1. extensions
 
 - **Target:** `ramacore.Extensions`
-- **Similarity:** 0.21
+- **Similarity:** 0.24
 - **Dependents:** 9
-- **Priority Score:** 9062408.0
-- **Functions:** 12/16 matched (target 36)
-- **Missing functions:** `new`, `clone_box`, `as_any`, `clone`
+- **Priority Score:** 9052408.0
+- **Functions:** 13/16 matched (target 37)
+- **Missing functions:** `clone_box`, `as_any`, `clone`
 - **Types:** 6/8 matched (target 11)
 - **Missing types:** `Extension`, `ExtensionType`
 - **Tests:** 4/4 matched
@@ -54,11 +54,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 3. limit.layer
 
 - **Target:** `limit.Layer`
-- **Similarity:** 0.31
+- **Similarity:** 0.51
 - **Dependents:** 2
-- **Priority Score:** 2030706.9
-- **Functions:** 3/5 matched (target 4)
-- **Missing functions:** `with_error_into_response_fn`, `into_layer`
+- **Priority Score:** 2010705.0
+- **Functions:** 5/5 matched (target 6)
+- **Missing functions:** _none_
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `Service`
 
@@ -286,19 +286,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Item`, `TestStruct`
 - **Tests:** 0/4 matched
 
-### 23. limit.mod
-
-- **Target:** `limit.Mod [STUB]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 71110.0
-- **Functions:** 3/8 matched (target 7)
-- **Missing functions:** `with_error_into_output_fn`, `test_limit`, `handle_request`, `test_with_error_into_response_fn`, `test_zero_limit`
-- **Types:** 1/3 matched (target 2)
-- **Missing types:** `Output`, `Error`
-- **Tests:** 0/4 matched
-
-### 24. layer.add_extension
+### 23. layer.add_extension
 
 - **Target:** `layer.AddExtension`
 - **Similarity:** 0.60
@@ -310,7 +298,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `Output`, `Error`, `Counter`
 - **Tests:** 0/2 matched
 
-### 25. layer.map_err
+### 24. layer.map_err
 
 - **Target:** `layer.MapErr`
 - **Similarity:** 0.28
@@ -321,7 +309,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 26. layer.map_output
+### 25. layer.map_output
 
 - **Target:** `layer.MapOutput`
 - **Similarity:** 0.28
@@ -332,7 +320,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 27. layer.trace_err
+### 26. layer.trace_err
 
 - **Target:** `layer.TraceErr`
 - **Similarity:** 0.31
@@ -343,7 +331,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 4)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 28. layer.map_input
+### 27. layer.map_input
 
 - **Target:** `layer.MapInput`
 - **Similarity:** 0.31
@@ -354,7 +342,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 29. layer.map_result
+### 28. layer.map_result
 
 - **Target:** `layer.MapResult`
 - **Similarity:** 0.32
@@ -365,7 +353,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 30. matcher.mfn
+### 29. matcher.mfn
 
 - **Target:** `matcher.Mfn`
 - **Similarity:** 0.09
@@ -376,7 +364,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/3 matched (target 1)
 - **Missing types:** `MatchFnBox`, `Sealed`
 
-### 31. username.parse
+### 30. username.parse
 
 - **Target:** `username.Parse`
 - **Similarity:** 0.69
@@ -388,7 +376,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`
 - **Tests:** 7/9 matched
 
-### 32. timeout.mod
+### 31. timeout.mod
 
 - **Target:** `timeout.Mod [STUB]`
 - **Similarity:** 0.00
@@ -399,7 +387,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/4 matched (target 1)
 - **Missing types:** `DefaultTimeout`, `Output`, `Error`
 
-### 33. policy.mod
+### 32. policy.mod
 
 - **Target:** `policy.Mod [STUB]`
 - **Similarity:** 0.00
@@ -410,7 +398,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/6 matched (target 7)
 - **Missing types:** `Guard`, `Error`
 
-### 34. layer.hijack
+### 33. layer.hijack
 
 - **Target:** `layer.Hijack`
 - **Similarity:** 0.55
@@ -421,7 +409,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 35. stream.json.stream.mod
+### 34. stream.json.stream.mod
 
 - **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Mod [STUB]`
 - **Similarity:** 0.00
@@ -433,7 +421,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/4 matched
 
-### 36. username.compose
+### 35. username.compose
 
 - **Target:** `username.Compose`
 - **Similarity:** 0.43
@@ -443,6 +431,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `fmt`, `source`
 - **Types:** 3/4 matched
 - **Missing types:** `ComposeErrorKind`
+
+### 36. limit.mod
+
+- **Target:** `limit.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 31110.0
+- **Functions:** 7/8 matched (target 16)
+- **Missing functions:** `handle_request`
+- **Types:** 1/3 matched (target 5)
+- **Missing types:** `Output`, `Error`
+- **Tests:** 3/4 matched
 
 ### 37. layer.into_error
 
@@ -455,7 +455,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `MakeLayerError`, `Error`, `Sealed`
 
-### 38. timeout.layer
+### 38. limit.into_output
+
+- **Target:** `limit.IntoOutput`
+- **Similarity:** 0.27
+- **Dependents:** 0
+- **Priority Score:** 30507.3
+- **Functions:** 1/1 matched (target 4)
+- **Missing functions:** _none_
+- **Types:** 1/4 matched (target 1)
+- **Missing types:** `ErrorIntoOutput`, `Output`, `Error`
+
+### 39. timeout.layer
 
 - **Target:** `timeout.Layer`
 - **Similarity:** 0.51
@@ -465,17 +476,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `into_layer`
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `Service`
-
-### 39. limit.into_output
-
-- **Target:** `limit.IntoOutput`
-- **Similarity:** 0.27
-- **Dependents:** 0
-- **Priority Score:** 20507.3
-- **Functions:** 1/1 matched (target 3)
-- **Missing functions:** _none_
-- **Types:** 2/4 matched (target 2)
-- **Missing types:** `Output`, `Error`
 
 ### 40. opentelemetry.attributes
 

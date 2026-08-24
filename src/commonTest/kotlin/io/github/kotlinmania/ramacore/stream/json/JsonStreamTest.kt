@@ -4,6 +4,7 @@ package io.github.kotlinmania.ramacore.stream.json
 import io.github.kotlinmania.ramacore.stream.json.stream.JsonReadStream
 import io.github.kotlinmania.ramacore.stream.json.stream.JsonWriteStream
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -24,6 +25,11 @@ private data class TestStruct(
 private data class Item(
     val id: Int,
     val name: String,
+)
+
+@Serializable
+private data class Data(
+    val bar: String,
 )
 
 class JsonStreamTest {
@@ -199,4 +205,44 @@ class JsonStreamTest {
             val lines = writeStream.toFlow().toList()
             assertEquals(listOf("{\"key\":1,\"value\":2}", "\n{\"key\":3,\"value\":4}"), lines)
         }
+
+    @Test
+    fun testJsonStreamSimple() = runTest {
+        val inputs = listOf(
+            "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}",
+            "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}",
+            "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}\n",
+            "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}\n",
+        )
+
+        for (input in inputs) {
+            val readStream = JsonReadStream.fromStringFlow(flowOf(input)) { json.decodeFromString<Data>(it) }
+            val results = readStream.toFlow().toList().map { it.getOrThrow() }
+            assertEquals(listOf(Data("foo"), Data("qux"), Data("baz")), results)
+        }
+    }
+
+    @Test
+    fun writeReadPendingEmpty() = runTest {
+        val writeStream = JsonWriteStream.new(emptyFlow<Int>()) { it.toString() }
+        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+        val collected = readStream.toFlow().toList()
+        assertTrue(collected.isEmpty())
+    }
+
+    @Test
+    fun writeReadOnce() = runTest {
+        val writeStream = JsonWriteStream.new(flowOf(1)) { it.toString() }
+        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+        val collected = readStream.toFlow().toList().map { it.getOrThrow() }
+        assertEquals(listOf(1), collected)
+    }
+
+    @Test
+    fun writeReadTwice() = runTest {
+        val writeStream = JsonWriteStream.new(flowOf(4, 2)) { it.toString() }
+        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+        val collected = readStream.toFlow().toList().map { it.getOrThrow() }
+        assertEquals(listOf(4, 2), collected)
+    }
 }
