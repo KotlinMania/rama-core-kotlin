@@ -18,6 +18,7 @@ public class Executor internal constructor(
     private val scope: CoroutineScope,
 ) {
     internal constructor(guard: ShutdownGuard? = null) : this(guard, CoroutineScope(Dispatchers.Default))
+
     /**
      * Spawns a task on the executor, returning an [AsyncTaskHandle] result.
      *
