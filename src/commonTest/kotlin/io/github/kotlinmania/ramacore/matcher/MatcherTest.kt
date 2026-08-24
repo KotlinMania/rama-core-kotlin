@@ -49,6 +49,12 @@ private class NumberConstMatcher(
     }
 }
 
+private sealed interface TestMatchers : Matcher<Int> {
+    data class Const(val m: NumberConstMatcher) : TestMatchers, Matcher<Int> by m
+    data class Even(val m: EvenMatcher) : TestMatchers, Matcher<Int> by m
+    data class Odd(val m: OddMatcher) : TestMatchers, Matcher<Int> by m
+}
+
 private class SimpleExtHolder(
     private val ext: Extensions,
 ) : ExtensionsRef {
@@ -168,6 +174,14 @@ class MatcherTest {
     }
 
     @Test
+    fun testMatchFnAlways() {
+        assertTrue(matchFn<Unit> { true }.matches(null, Unit))
+        assertTrue(matchFn<Int> { true }.matches(null, 0))
+        assertTrue(matchFn<Boolean> { true }.matches(null, false))
+        assertTrue(matchFn<String> { true }.matches(null, "foo"))
+    }
+
+    @Test
     fun testMatchFn() {
         val matcher = matchFn<Int> { input -> input % 2 != 0 }
         for (i in 0..255) {
@@ -180,8 +194,26 @@ class MatcherTest {
     }
 
     @Test
-    fun testIterAnd() {
-        val matchers = listOf(NumberConstMatcher(1), OddMatcher())
+    fun testEnumMatcher() {
+        assertFalse(TestMatchers.Const(NumberConstMatcher(1)).matches(null, 0))
+        assertTrue(TestMatchers.Const(NumberConstMatcher(1)).matches(null, 1))
+        assertFalse(TestMatchers.Even(EvenMatcher()).matches(null, 1))
+        assertTrue(TestMatchers.Even(EvenMatcher()).matches(null, 2))
+        assertFalse(TestMatchers.Odd(OddMatcher()).matches(null, 2))
+        assertTrue(TestMatchers.Odd(OddMatcher()).matches(null, 3))
+    }
+
+    @Test
+    fun testIterEnumAnd() {
+        val matchers: List<TestMatchers> = listOf(
+            TestMatchers.Const(NumberConstMatcher(1)),
+            TestMatchers.Odd(OddMatcher()),
+        )
+        assertTrue(matchers[0].matches(null, 1))
+        assertTrue(matchers[1].matches(null, 1))
+        for (matcher in matchers) {
+            assertTrue(matcher.matches(null, 1))
+        }
         assertTrue(matchers.matchesAnd(null, 1))
         assertFalse(matchers.matchesAnd(null, 3))
         assertFalse(matchers.matchesAnd(null, 4))
@@ -197,14 +229,50 @@ class MatcherTest {
     }
 
     @Test
-    fun testIterOr() {
-        val matchers =
-            listOf(
-                NumberConstMatcher(0),
-                NumberConstMatcher(2),
-                OddMatcher(),
-            )
+    fun testIterEnumOr() {
+        val matchers: List<TestMatchers> = listOf(
+            TestMatchers.Const(NumberConstMatcher(0)),
+            TestMatchers.Const(NumberConstMatcher(2)),
+            TestMatchers.Odd(OddMatcher()),
+        )
+        assertTrue(matchers[0].matches(null, 0))
+        assertTrue(matchers[1].matches(null, 2))
+        assertTrue(matchers[2].matches(null, 1))
+        for (i in 0..2) {
+            assertTrue(matchers.matchesOr(null, i), "i = $i")
+        }
+        for (i in 3..255) {
+            if (i % 2 == 1) {
+                assertTrue(matchers.matchesOr(null, i), "i = $i")
+            } else {
+                assertFalse(matchers.matchesOr(null, i), "i = $i")
+            }
+        }
+    }
 
+    @Test
+    fun testIterBoxAnd() {
+        val matchers: List<Matcher<Int>> = listOf(NumberConstMatcher(1), OddMatcher())
+        assertTrue(matchers[0].matches(null, 1))
+        assertTrue(matchers[1].matches(null, 1))
+        for (matcher in matchers) {
+            assertTrue(matcher.matches(null, 1))
+        }
+        assertTrue(matchers.matchesAnd(null, 1))
+        assertFalse(matchers.matchesAnd(null, 3))
+        assertFalse(matchers.matchesAnd(null, 4))
+    }
+
+    @Test
+    fun testIterBoxOr() {
+        val matchers: List<Matcher<Int>> = listOf(
+            NumberConstMatcher(0),
+            NumberConstMatcher(2),
+            OddMatcher(),
+        )
+        assertTrue(matchers[0].matches(null, 0))
+        assertTrue(matchers[1].matches(null, 2))
+        assertTrue(matchers[2].matches(null, 1))
         for (i in 0..2) {
             assertTrue(matchers.matchesOr(null, i), "i = $i")
         }
@@ -238,6 +306,58 @@ class MatcherTest {
 
         val ext3 = Extensions()
         assertFalse(matcher.matches(ext3, 4))
+        assertNull(ext3.get<Marker.Even>())
+        assertNull(ext3.get<Marker.Const>())
+        assertNull(ext3.get<Marker.Odd>())
+    }
+
+    @Test
+    fun testExtInsertAndRevertIterOr() {
+        val matchers: List<Matcher<Int>> = listOf(
+            EvenMatcher().and(NumberConstMatcher(2)),
+            OddMatcher().and(NumberConstMatcher(3)),
+        )
+
+        val ext1 = Extensions()
+        assertTrue(matchers.matchesOr(ext1, 2))
+        assertNotNull(ext1.get<Marker.Even>())
+        assertNotNull(ext1.get<Marker.Const>())
+        assertNull(ext1.get<Marker.Odd>())
+
+        val ext2 = Extensions()
+        assertTrue(matchers.matchesOr(ext2, 3))
+        assertNull(ext2.get<Marker.Even>())
+        assertNotNull(ext2.get<Marker.Const>())
+        assertNotNull(ext2.get<Marker.Odd>())
+
+        val ext3 = Extensions()
+        assertFalse(matchers.matchesOr(ext3, 4))
+        assertNull(ext3.get<Marker.Even>())
+        assertNull(ext3.get<Marker.Const>())
+        assertNull(ext3.get<Marker.Odd>())
+    }
+
+    @Test
+    fun testExtInsertAndRevertIterAnd() {
+        val matchers: List<Matcher<Int>> = listOf(
+            NumberConstMatcher(2).or(NumberConstMatcher(3)),
+            OddMatcher().or(EvenMatcher()),
+        )
+
+        val ext1 = Extensions()
+        assertTrue(matchers.matchesAnd(ext1, 3))
+        assertNull(ext1.get<Marker.Even>())
+        assertNotNull(ext1.get<Marker.Const>())
+        assertNotNull(ext1.get<Marker.Odd>())
+
+        val ext2 = Extensions()
+        assertTrue(matchers.matchesAnd(ext2, 2))
+        assertNotNull(ext2.get<Marker.Even>())
+        assertNotNull(ext2.get<Marker.Const>())
+        assertNull(ext2.get<Marker.Odd>())
+
+        val ext3 = Extensions()
+        assertFalse(matchers.matchesAnd(ext3, 1))
         assertNull(ext3.get<Marker.Even>())
         assertNull(ext3.get<Marker.Const>())
         assertNull(ext3.get<Marker.Odd>())
