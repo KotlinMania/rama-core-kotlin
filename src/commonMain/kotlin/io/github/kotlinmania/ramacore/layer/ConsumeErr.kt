@@ -7,9 +7,6 @@ import io.github.kotlinmania.ramacore.service.Service
 /**
  * Consumer callback for error values in [ConsumeErr].
  */
-/**
- * Consumer callback for error values in [ConsumeErr].
- */
 public interface ErrorConsumer<in Error> {
     public operator fun invoke(error: Error)
 }
@@ -101,4 +98,3 @@ public class ConsumeErrLayer<Input, Output : Any, Error : Any>(
             )
     }
 }
-

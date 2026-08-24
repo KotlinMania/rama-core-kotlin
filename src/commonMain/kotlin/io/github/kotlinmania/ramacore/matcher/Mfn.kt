@@ -60,4 +60,3 @@ public fun <Input> matchFn(matcher: Matcher<Input>): MatchFn<Input> =
  */
 public fun <Input> matchFn(predicate: InputPredicate<Input>): MatchFn<Input> =
     MatchFn.fromInput(predicate)
-

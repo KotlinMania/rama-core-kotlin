@@ -22,4 +22,3 @@ public class LayerFn<in S, out OutS>(
  * Returns a new [LayerFn] that implements [Layer] by calling the given function.
  */
 public fun <S, OutS> layerFn(transform: Layer<S, OutS>): LayerFn<S, OutS> = LayerFn(transform)
-

@@ -69,4 +69,3 @@ public inline fun <Output : Any, Error : Any> serviceFn(
             override suspend fun serve(input: Unit): RamaResult<Output, Error> = handler()
         },
     )
-
