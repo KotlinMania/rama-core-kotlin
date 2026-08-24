@@ -5,9 +5,9 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 58/60 (96.7%)
-- **Function parity:** 159/408 matched (target 648) — 39.0%
-- **Class/type parity:** 83/192 matched (target 181) — 43.2%
-- **Combined symbol parity:** 242/600 matched (target 829) — 40.3%
+- **Function parity:** 159/408 matched (target 652) — 39.0%
+- **Class/type parity:** 83/192 matched (target 182) — 43.2%
+- **Combined symbol parity:** 242/600 matched (target 834) — 40.3%
 - **Average inline-code cosine:** 0.26 (function body across 44 matched files)
 - **Average documentation cosine:** 0.57 (doc text across 44 matched files)
 - **Cheat-zeroed Files:** 18
@@ -90,9 +90,9 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.08
 - **Dependents:** 0
 - **Priority Score:** 313809.2
-- **Functions:** 5/36 matched (target 24)
+- **Functions:** 5/36 matched (target 28)
 - **Missing functions:** `is_blank`, `finalize`, `default`, `collect_output`, `no_input`, `incomplete_input`, `single_exact_input`, `single_item_split_into_two_inputs`, `two_items_in_single_input`, `two_items_in_many_inputs_with_rest`, `input_completing_previous_rest_then_multiple_complete_items_and_more_rest`, `carriage_return_handled_gracefully`, `whitespace_handled_gracefully`, `erroneous_entry_emitted_as_json_error`, `error_from_split_entry`, `old_data_is_discarded`, `configured_engine`, `engine_with_empty_line_handling`, `raises_error_when_parsing_empty_line_in_parse_always_mode`, `does_not_raise_error_when_parsing_empty_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_empty_line_with_carriage_return_in_ignore_empty_mode`, `raises_error_when_parsing_non_empty_blank_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_non_empty_blank_line_in_ignore_blank_mode`, `finalize_ignores_rest_if_parse_rest_is_false`, `finalize_parses_valid_rest`, `finalize_raises_error_on_invalid_rest`, `finalize_ignores_empty_rest_even_if_empty_line_handling_is_parse_always`, `finalize_ignores_empty_rest_if_empty_line_handling_is_ignore_empty`, `finalize_does_not_ignore_non_empty_blank_rest_if_empty_line_handling_is_ignore_empty`, `finalize_ignores_non_empty_blank_rest_if_empty_line_handling_is_ignore_blank`, `finalize_is_idempotent`
-- **Types:** 2/2 matched (target 4)
+- **Types:** 2/2 matched (target 5)
 - **Missing types:** _none_
 - **Tests:** 0/28 matched
 
