@@ -55,7 +55,7 @@ public fun <T, U, CrateMarker> ramaInto(value: T, from: RamaFrom<T, U, CrateMark
  * traits via the [E] type parameter, which the previous `kotlin.Result<U>`
  * shape collapsed to `Throwable`.
  */
-public class RamaResult<out T, out E> private constructor(
+public class RamaResult<out T : Any, out E : Any> private constructor(
     public val value: T?,
     public val error: E?,
 ) {
@@ -95,7 +95,7 @@ public inline fun <T : Any, E : Any, F : Any> RamaResult<T, E>.mapErr(transform:
  * To implement this interface, use a module-local `CrateMarker` generic type.
  * More info: <https://ramaproxy.org/book/intro/patterns.html#working-around-the-orphan-rule-in-specific-cases>
  */
-public fun interface RamaTryFrom<T, U, E, CrateMarker> {
+public fun interface RamaTryFrom<T, U : Any, E : Any, CrateMarker> {
     public fun ramaTryFrom(value: T): RamaResult<U, E>
 }
 
@@ -108,12 +108,12 @@ public fun interface RamaTryFrom<T, U, E, CrateMarker> {
  *
  * [RamaTryInto] is bridged from [RamaTryFrom] in the opposite direction by [ramaTryInto].
  */
-public fun interface RamaTryInto<T, E, CrateMarker> {
+public fun interface RamaTryInto<T : Any, E : Any, CrateMarker> {
     public fun ramaTryInto(): RamaResult<T, E>
 }
 
 /** Convert [value] to [U] using the supplied [RamaTryFrom] implementation. */
-public fun <T, U, E, CrateMarker> ramaTryInto(
+public fun <T, U : Any, E : Any, CrateMarker> ramaTryInto(
     value: T,
     from: RamaTryFrom<T, U, E, CrateMarker>,
 ): RamaResult<U, E> = from.ramaTryFrom(value)

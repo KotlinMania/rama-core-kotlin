@@ -1,6 +1,7 @@
 // port-lint: source layer/limit/layer.rs
 package io.github.kotlinmania.ramacore.layer.limit
 
+import io.github.kotlinmania.ramacore.RamaResult
 import io.github.kotlinmania.ramacore.layer.Layer
 import io.github.kotlinmania.ramacore.layer.limit.policy.Policy
 import io.github.kotlinmania.ramacore.layer.limit.policy.UnlimitedPolicy
@@ -16,6 +17,14 @@ public class LimitLayer<Input, Output : Any, Error : Any, Guard, PolicyError : A
 ) : Layer<Service<Input, Output, Error>, Limit<Input, Output, Error, Guard, PolicyError>> {
     override fun layer(inner: Service<Input, Output, Error>): Limit<Input, Output, Error, Guard, PolicyError> =
         Limit(inner, policy, errorIntoOutput, policyErrorMapper)
+
+    override fun intoLayer(inner: Service<Input, Output, Error>): Limit<Input, Output, Error, Guard, PolicyError> =
+        layer(inner)
+
+    public fun withErrorIntoResponseFn(
+        errorIntoOutput: ErrorIntoOutput<PolicyError, Output, Error>,
+    ): LimitLayer<Input, Output, Error, Guard, PolicyError> =
+        LimitLayer(policy, errorIntoOutput = errorIntoOutput, policyErrorMapper = policyErrorMapper)
 
     override fun toString(): String = "LimitLayer($policy)"
 
