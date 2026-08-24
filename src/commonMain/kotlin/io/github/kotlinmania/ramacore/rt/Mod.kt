@@ -1,4 +1,7 @@
 // port-lint: source rt/mod.rs
 package io.github.kotlinmania.ramacore.rt
 
-// Module marker for runtime utilities.
+/**
+ * Marker interface for runtime executors.
+ */
+public interface RuntimeMarker

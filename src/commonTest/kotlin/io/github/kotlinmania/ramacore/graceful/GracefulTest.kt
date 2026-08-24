@@ -15,7 +15,7 @@ class GracefulTest {
             val shutdown = Shutdown.new()
             assertFalse(shutdown.isShuttingDown)
 
-            val guard = shutdown.guard(this)
+            val guard = shutdown.guard()
             assertFalse(guard.isCancelled)
 
             val task =
@@ -48,7 +48,7 @@ class GracefulTest {
     fun testShutdownGuardSpawn() =
         runTest {
             val shutdown = Shutdown.new()
-            val guard = shutdown.guard(this)
+            val guard = shutdown.guard()
 
             var executed = false
             val job =

@@ -13,7 +13,7 @@ class ExecutorTest {
     @Test
     fun testDefaultExecutor() =
         runTest {
-            val executor = Executor.new(this)
+            val executor = Executor.new()
             assertNull(executor.guard())
 
             val deferred =
@@ -28,8 +28,8 @@ class ExecutorTest {
     fun testGracefulExecutor() =
         runTest {
             val shutdown = Shutdown.new()
-            val guard = shutdown.guard(this)
-            val executor = Executor.graceful(guard, this)
+            val guard = shutdown.guard()
+            val executor = Executor.graceful(guard)
 
             assertNotNull(executor.guard())
 
