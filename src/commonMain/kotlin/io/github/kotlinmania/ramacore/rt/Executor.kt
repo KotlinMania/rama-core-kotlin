@@ -14,9 +14,10 @@ import kotlinx.coroutines.launch
  * Future / task executor that utilises coroutine dispatchers.
  */
 public class Executor internal constructor(
-    public val guard: ShutdownGuard? = null,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
+    private val guard: ShutdownGuard?,
+    private val scope: CoroutineScope,
 ) {
+    internal constructor(guard: ShutdownGuard? = null) : this(guard, CoroutineScope(Dispatchers.Default))
     /**
      * Spawns a task on the executor, returning an [AsyncTaskHandle] result.
      *
