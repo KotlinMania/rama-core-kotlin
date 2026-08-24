@@ -59,6 +59,11 @@ public class Limit<Input, Output : Any, Error : Any, Guard, PolicyError : Any>(
         }
     }
 
+    public fun withErrorIntoOutputFn(
+        errorIntoOutput: ErrorIntoOutput<PolicyError, Output, Error>,
+    ): Limit<Input, Output, Error, Guard, PolicyError> =
+        Limit(inner, policy, errorIntoOutput = errorIntoOutput, policyErrorMapper = policyErrorMapper)
+
     override fun toString(): String = "Limit($inner, $policy)"
 
     public companion object {

@@ -114,6 +114,10 @@ public class Extensions {
         entries.joinToString(prefix = "Extensions[", postfix = "]") {
             "${it.typeId.simpleName ?: "<anonymous>"}=${it.value}"
         }
+
+    public companion object {
+        public fun new(): Extensions = Extensions()
+    }
 }
 
 /** Anything that can yield a read-only view of its [Extensions] store. */
