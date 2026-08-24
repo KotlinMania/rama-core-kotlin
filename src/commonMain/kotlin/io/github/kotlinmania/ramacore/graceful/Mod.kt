@@ -7,10 +7,36 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
+
+/**
+ * Handle representing a background task.
+ */
+public interface TaskHandle {
+    /**
+     * Cancels the task execution.
+     */
+    public fun cancel()
+
+    /**
+     * Awaits completion of the task.
+     */
+    public suspend fun join()
+}
+
+/**
+ * Handle representing a background task that produces a result.
+ */
+public interface AsyncTaskHandle<out T> : TaskHandle {
+    /**
+     * Awaits and returns the result of the task.
+     */
+    public suspend fun await(): T
+}
 
 /**
  * Shutdown manager for graceful shutdown of async-first applications.
@@ -21,8 +47,8 @@ public class Shutdown(
     /**
      * Creates a new [ShutdownGuard] associated with this shutdown manager.
      */
-    public fun guard(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)): ShutdownGuard =
-        ShutdownGuard(signal, scope)
+    public fun guard(): ShutdownGuard =
+        ShutdownGuard(signal, CoroutineScope(Dispatchers.Default))
 
     /**
      * Triggers graceful shutdown.
@@ -77,7 +103,7 @@ public class ShutdownBuilder(
 /**
  * Guard that tracks tasks and coordinates graceful shutdown.
  */
-public class ShutdownGuard(
+public class ShutdownGuard internal constructor(
     private val signal: Deferred<Unit>,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ) {
@@ -87,19 +113,37 @@ public class ShutdownGuard(
     /**
      * Spawns a task that is tracked by this shutdown guard.
      */
-    public fun <T> spawnTask(block: suspend () -> T): Deferred<T> {
+    public fun <T> spawnTask(block: suspend () -> T): AsyncTaskHandle<T> {
         val deferred = scope.async { block() }
         trackJob(deferred)
-        return deferred
+        return object : AsyncTaskHandle<T> {
+            override fun cancel() {
+                deferred.cancel()
+            }
+
+            override suspend fun join() {
+                deferred.join()
+            }
+
+            override suspend fun await(): T = deferred.await()
+        }
     }
 
     /**
      * Spawns a coroutine job tracked by this shutdown guard.
      */
-    public fun spawn(block: suspend () -> Unit): Job {
+    public fun spawn(block: suspend () -> Unit): TaskHandle {
         val job = scope.launch { block() }
         trackJob(job)
-        return job
+        return object : TaskHandle {
+            override fun cancel() {
+                job.cancel()
+            }
+
+            override suspend fun join() {
+                job.join()
+            }
+        }
     }
 
     private fun trackJob(job: Job) {
