@@ -50,9 +50,20 @@ private class NumberConstMatcher(
 }
 
 private sealed interface TestMatchers : Matcher<Int> {
-    data class Const(val m: NumberConstMatcher) : TestMatchers, Matcher<Int> by m
-    data class Even(val m: EvenMatcher) : TestMatchers, Matcher<Int> by m
-    data class Odd(val m: OddMatcher) : TestMatchers, Matcher<Int> by m
+    data class Const(
+        val m: NumberConstMatcher,
+    ) : TestMatchers,
+        Matcher<Int> by m
+
+    data class Even(
+        val m: EvenMatcher,
+    ) : TestMatchers,
+        Matcher<Int> by m
+
+    data class Odd(
+        val m: OddMatcher,
+    ) : TestMatchers,
+        Matcher<Int> by m
 }
 
 private class SimpleExtHolder(
@@ -205,10 +216,11 @@ class MatcherTest {
 
     @Test
     fun testIterEnumAnd() {
-        val matchers: List<TestMatchers> = listOf(
-            TestMatchers.Const(NumberConstMatcher(1)),
-            TestMatchers.Odd(OddMatcher()),
-        )
+        val matchers: List<TestMatchers> =
+            listOf(
+                TestMatchers.Const(NumberConstMatcher(1)),
+                TestMatchers.Odd(OddMatcher()),
+            )
         assertTrue(matchers[0].matches(null, 1))
         assertTrue(matchers[1].matches(null, 1))
         for (matcher in matchers) {
@@ -230,11 +242,12 @@ class MatcherTest {
 
     @Test
     fun testIterEnumOr() {
-        val matchers: List<TestMatchers> = listOf(
-            TestMatchers.Const(NumberConstMatcher(0)),
-            TestMatchers.Const(NumberConstMatcher(2)),
-            TestMatchers.Odd(OddMatcher()),
-        )
+        val matchers: List<TestMatchers> =
+            listOf(
+                TestMatchers.Const(NumberConstMatcher(0)),
+                TestMatchers.Const(NumberConstMatcher(2)),
+                TestMatchers.Odd(OddMatcher()),
+            )
         assertTrue(matchers[0].matches(null, 0))
         assertTrue(matchers[1].matches(null, 2))
         assertTrue(matchers[2].matches(null, 1))
@@ -265,11 +278,12 @@ class MatcherTest {
 
     @Test
     fun testIterBoxOr() {
-        val matchers: List<Matcher<Int>> = listOf(
-            NumberConstMatcher(0),
-            NumberConstMatcher(2),
-            OddMatcher(),
-        )
+        val matchers: List<Matcher<Int>> =
+            listOf(
+                NumberConstMatcher(0),
+                NumberConstMatcher(2),
+                OddMatcher(),
+            )
         assertTrue(matchers[0].matches(null, 0))
         assertTrue(matchers[1].matches(null, 2))
         assertTrue(matchers[2].matches(null, 1))
@@ -313,10 +327,11 @@ class MatcherTest {
 
     @Test
     fun testExtInsertAndRevertIterOr() {
-        val matchers: List<Matcher<Int>> = listOf(
-            EvenMatcher().and(NumberConstMatcher(2)),
-            OddMatcher().and(NumberConstMatcher(3)),
-        )
+        val matchers: List<Matcher<Int>> =
+            listOf(
+                EvenMatcher().and(NumberConstMatcher(2)),
+                OddMatcher().and(NumberConstMatcher(3)),
+            )
 
         val ext1 = Extensions()
         assertTrue(matchers.matchesOr(ext1, 2))
@@ -339,10 +354,11 @@ class MatcherTest {
 
     @Test
     fun testExtInsertAndRevertIterAnd() {
-        val matchers: List<Matcher<Int>> = listOf(
-            NumberConstMatcher(2).or(NumberConstMatcher(3)),
-            OddMatcher().or(EvenMatcher()),
-        )
+        val matchers: List<Matcher<Int>> =
+            listOf(
+                NumberConstMatcher(2).or(NumberConstMatcher(3)),
+                OddMatcher().or(EvenMatcher()),
+            )
 
         val ext1 = Extensions()
         assertTrue(matchers.matchesAnd(ext1, 3))

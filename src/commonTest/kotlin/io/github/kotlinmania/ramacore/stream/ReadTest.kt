@@ -44,19 +44,102 @@ class ReadTest {
             assertContentEquals(byteArrayOf(10, 20), buf)
         }
 
+    private suspend fun testMultiReadAsync(
+        stream: AsyncRead,
+        chunkSize: Int,
+        cases: List<String>,
+    ) {
+        val buf = ByteArray(chunkSize)
+        for ((i, case) in cases.withIndex()) {
+            val n = stream.read(buf, 0, chunkSize)
+            assertEquals(case.length, n, "step #${i + 1} for cases: $cases")
+            assertEquals(case, buf.decodeToString(0, n), "step #${i + 1} for cases: $cases")
+        }
+    }
+
     @Test
-    fun testChainReader() =
+    fun testHeapReaderChunked() =
         runTest {
-            val r1 = HeapReader.new(byteArrayOf(1, 2))
-            val r2 = HeapReader.new(byteArrayOf(3, 4))
-            val chain = ChainReader.new(r1, r2)
+            // N = 5, data = "" -> [""]
+            testMultiReadAsync(HeapReader.new("".encodeToByteArray()), 5, listOf(""))
 
-            val buf = ByteArray(4)
-            val n1 = chain.read(buf, 0, 2)
-            assertEquals(2, n1)
-            val n2 = chain.read(buf, 2, 2)
-            assertEquals(2, n2)
+            // N = 5, data = "hello world" -> ["hello", " worl", "d", ""]
+            testMultiReadAsync(
+                HeapReader.new("hello world".encodeToByteArray()),
+                5,
+                listOf("hello", " worl", "d", ""),
+            )
 
-            assertContentEquals(byteArrayOf(1, 2, 3, 4), buf)
+            // N = 10, data = "hello world" -> ["hello worl", "d", ""]
+            testMultiReadAsync(
+                HeapReader.new("hello world".encodeToByteArray()),
+                10,
+                listOf("hello worl", "d", ""),
+            )
+        }
+
+    @Test
+    fun testStackReaderChunked() =
+        runTest {
+            // N = 5, data = "" -> [""]
+            testMultiReadAsync(StackReader.new("".encodeToByteArray()), 5, listOf(""))
+
+            // N = 5, data = "hello world" -> ["hello", " worl", "d", ""]
+            testMultiReadAsync(
+                StackReader.new("hello world".encodeToByteArray()),
+                5,
+                listOf("hello", " worl", "d", ""),
+            )
+
+            // N = 10, data = "hello world" -> ["hello worl", "d", ""]
+            testMultiReadAsync(
+                StackReader.new("hello world".encodeToByteArray()),
+                10,
+                listOf("hello worl", "d", ""),
+            )
+        }
+
+    @Test
+    fun testChainReaderChunked() =
+        runTest {
+            // N = 5, r1 = "", r2 = "" -> [""]
+            testMultiReadAsync(
+                ChainReader.new(
+                    HeapReader.new("".encodeToByteArray()),
+                    HeapReader.new("".encodeToByteArray()),
+                ),
+                5,
+                listOf(""),
+            )
+
+            // N = 5, r1 = "hello world", r2 = "" -> ["hello", " worl", "d", ""]
+            testMultiReadAsync(
+                ChainReader.new(
+                    HeapReader.new("hello world".encodeToByteArray()),
+                    HeapReader.new("".encodeToByteArray()),
+                ),
+                5,
+                listOf("hello", " worl", "d", ""),
+            )
+
+            // N = 5, r1 = "hello ", r2 = "world" -> ["hello", " ", "world", ""]
+            testMultiReadAsync(
+                ChainReader.new(
+                    HeapReader.new("hello ".encodeToByteArray()),
+                    HeapReader.new("world".encodeToByteArray()),
+                ),
+                5,
+                listOf("hello", " ", "world", ""),
+            )
+
+            // N = 5, r1 = "", r2 = "hello world" -> ["hello", " worl", "d", ""]
+            testMultiReadAsync(
+                ChainReader.new(
+                    HeapReader.new("".encodeToByteArray()),
+                    HeapReader.new("hello world".encodeToByteArray()),
+                ),
+                5,
+                listOf("hello", " worl", "d", ""),
+            )
         }
 }

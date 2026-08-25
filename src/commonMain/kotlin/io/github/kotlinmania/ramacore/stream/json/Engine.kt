@@ -73,6 +73,18 @@ public class NdjsonEngine<T>(
     }
 
     /**
+     * Returns true if there is unprocessed input in the internal buffer.
+     */
+    public val hasInputPending: Boolean
+        get() = inQueue.isNotEmpty()
+
+    /**
+     * Returns the number of parsed items currently queued.
+     */
+    public val queuedCount: Int
+        get() = outQueue.size
+
+    /**
      * Parses the rest leftover from previous calls to [input], if configured.
      * This function is idempotent.
      */

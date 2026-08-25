@@ -120,9 +120,10 @@ class LimitTest {
                 }
 
             val layer =
-                LimitLayer.new<String, String, Nothing, ConcurrentCounter.Guard, LimitReached>(
-                    ConcurrentPolicy.max(0),
-                ).withErrorIntoResponseFn { _ -> RamaResult.ok("bad") }
+                LimitLayer
+                    .new<String, String, Nothing, ConcurrentCounter.Guard, LimitReached>(
+                        ConcurrentPolicy.max(0),
+                    ).withErrorIntoResponseFn { _ -> RamaResult.ok("bad") }
 
             val service = layer.layer(handleRequest)
             val resp = service.serve("Hello")
