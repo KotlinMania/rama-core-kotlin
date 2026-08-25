@@ -5,13 +5,13 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 58/60 (96.7%)
-- **Function parity:** 159/408 matched (target 652) — 39.0%
-- **Class/type parity:** 83/192 matched (target 182) — 43.2%
-- **Combined symbol parity:** 242/600 matched (target 834) — 40.3%
-- **Average inline-code cosine:** 0.26 (function body across 44 matched files)
+- **Function parity:** 161/408 matched (target 685) — 39.5%
+- **Class/type parity:** 84/192 matched (target 187) — 43.8%
+- **Combined symbol parity:** 245/600 matched (target 872) — 40.8%
+- **Average inline-code cosine:** 0.27 (function body across 44 matched files)
 - **Average documentation cosine:** 0.57 (doc text across 44 matched files)
 - **Cheat-zeroed Files:** 18
-- **Critical Issues:** 54 files with <0.60 function similarity
+- **Critical Issues:** 53 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -42,14 +42,14 @@ Every matched file is listed below with function and type symbol parity.
 ### 2. policy.matcher
 
 - **Target:** `policy.Matcher`
-- **Similarity:** 0.10
+- **Similarity:** 0.64
 - **Dependents:** 5
-- **Priority Score:** 5101109.0
-- **Functions:** 1/7 matched (target 3)
-- **Missing functions:** `assert_ready`, `assert_abort`, `matcher_policy_empty`, `matcher_policy_always`, `matches`, `matcher_policy_scoped_limits`
-- **Types:** 0/4 matched (target 2)
-- **Missing types:** `Guard`, `Error`, `NumberedRequest`, `TestMatchers`
-- **Tests:** 0/6 matched
+- **Priority Score:** 5061103.5
+- **Functions:** 4/7 matched (target 10)
+- **Missing functions:** `assert_ready`, `assert_abort`, `matches`
+- **Types:** 1/4 matched (target 6)
+- **Missing types:** `Guard`, `Error`, `NumberedRequest`
+- **Tests:** 3/6 matched
 
 ### 3. limit.layer
 
@@ -90,7 +90,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.08
 - **Dependents:** 0
 - **Priority Score:** 313809.2
-- **Functions:** 5/36 matched (target 28)
+- **Functions:** 5/36 matched (target 41)
 - **Missing functions:** `is_blank`, `finalize`, `default`, `collect_output`, `no_input`, `incomplete_input`, `single_exact_input`, `single_item_split_into_two_inputs`, `two_items_in_single_input`, `two_items_in_many_inputs_with_rest`, `input_completing_previous_rest_then_multiple_complete_items_and_more_rest`, `carriage_return_handled_gracefully`, `whitespace_handled_gracefully`, `erroneous_entry_emitted_as_json_error`, `error_from_split_entry`, `old_data_is_discarded`, `configured_engine`, `engine_with_empty_line_handling`, `raises_error_when_parsing_empty_line_in_parse_always_mode`, `does_not_raise_error_when_parsing_empty_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_empty_line_with_carriage_return_in_ignore_empty_mode`, `raises_error_when_parsing_non_empty_blank_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_non_empty_blank_line_in_ignore_blank_mode`, `finalize_ignores_rest_if_parse_rest_is_false`, `finalize_parses_valid_rest`, `finalize_raises_error_on_invalid_rest`, `finalize_ignores_empty_rest_even_if_empty_line_handling_is_parse_always`, `finalize_ignores_empty_rest_if_empty_line_handling_is_ignore_empty`, `finalize_does_not_ignore_non_empty_blank_rest_if_empty_line_handling_is_ignore_empty`, `finalize_ignores_non_empty_blank_rest_if_empty_line_handling_is_ignore_blank`, `finalize_is_idempotent`
 - **Types:** 2/2 matched (target 5)
 - **Missing types:** _none_
@@ -99,10 +99,10 @@ Every matched file is listed below with function and type symbol parity.
 ### 7. stream.peek
 
 - **Target:** `stream.Peek`
-- **Similarity:** 0.12
+- **Similarity:** 0.15
 - **Dependents:** 0
-- **Priority Score:** 222608.8
-- **Functions:** 4/25 matched (target 5)
+- **Priority Score:** 222608.5
+- **Functions:** 4/25 matched (target 7)
 - **Missing functions:** `poll_read`, `poll_fill_buf`, `consume`, `poll_write`, `poll_flush`, `poll_shutdown`, `poll_write_vectored`, `is_write_vectored`, `write`, `flush`, `write_all`, `write_fmt`, `write_vectored`, `test_multi_read_async`, `test_multi_read_sync`, `test_peek_stream_read`, `test_sync_and_async`, `new_peek_write_stream`, `test_multi_write_async`, `test_multi_write_sync`, `test_peek_stream_write`
 - **Types:** 0/1 matched (target 2)
 - **Missing types:** `TestCase`
@@ -123,14 +123,14 @@ Every matched file is listed below with function and type symbol parity.
 ### 9. stream.read
 
 - **Target:** `stream.Read`
-- **Similarity:** 0.20
+- **Similarity:** 0.21
 - **Dependents:** 0
-- **Priority Score:** 172608.0
-- **Functions:** 8/24 matched (target 17)
-- **Missing functions:** `from`, `default`, `poll_read`, `poll_fill_buf`, `consume`, `read_exact`, `read_to_end`, `read_to_string`, `read_vectored`, `get_ref`, `get_mut`, `get_pin_mut`, `into_inner`, `test_multi_read_async`, `test_multi_read_sync`, `test_sync_and_async`
+- **Priority Score:** 182607.9
+- **Functions:** 7/24 matched (target 20)
+- **Missing functions:** `from`, `default`, `poll_read`, `poll_fill_buf`, `consume`, `read_exact`, `read_to_end`, `read_to_string`, `read_vectored`, `get_ref`, `get_mut`, `get_pin_mut`, `into_inner`, `test_multi_read_async`, `test_multi_read_sync`, `test_sync_and_async`, `test_chain_reader`
 - **Types:** 1/2 matched (target 5)
 - **Missing types:** `TestCase`
-- **Tests:** 3/6 matched
+- **Tests:** 2/6 matched
 
 ### 10. svc_input
 
@@ -650,9 +650,9 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 132)
+- **Functions:** 0/0 matched (target 140)
 - **Missing functions:** _none_
-- **Types:** 0/0 matched (target 17)
+- **Types:** 0/0 matched (target 18)
 - **Missing types:** _none_
 
 ### 56. graceful
