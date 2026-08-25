@@ -147,7 +147,7 @@ class ParseTest {
     }
 
     @Test
-    fun testUsernameLabelParserAbort() {
+    fun testUsernameLabelParserAbortTuple() {
         val ext = Extensions()
         val p1 =
             CompositeUsernameParser(
@@ -157,9 +157,27 @@ class ParseTest {
         assertTrue(parseUsername(ext, p1, "username-foo").isFailure())
 
         val p2 =
+            CompositeUsernameParser(
+                UsernameOpaqueLabelParser.new(),
+                UsernameLabelAbortParser(),
+            )
+        assertTrue(parseUsername(ext, p2, "username-foo").isFailure())
+    }
+
+    @Test
+    fun testUsernameLabelParserAbortExclusiveTuple() {
+        val ext = Extensions()
+        val p1 =
             ExclusiveUsernameParsers(
                 UsernameLabelAbortParser(),
                 UsernameOpaqueLabelParser.new(),
+            )
+        assertTrue(parseUsername(ext, p1, "username-foo").isFailure())
+
+        val p2 =
+            CompositeUsernameParser(
+                UsernameOpaqueLabelParser.new(),
+                UsernameLabelAbortParser(),
             )
         assertTrue(parseUsername(ext, p2, "username-foo").isFailure())
     }

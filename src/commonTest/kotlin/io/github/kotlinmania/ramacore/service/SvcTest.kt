@@ -23,8 +23,27 @@ class SvcTest {
             RamaResult.ok(factor * input)
     }
 
+    private fun <T> assertSend() {}
+    private fun <T> assertSync() {}
+
     @Test
-    fun testAddSvc() =
+    fun assertSendTest() {
+        assertSend<AddSvc>()
+        assertSend<MulSvc>()
+        assertSend<BoxService<Unit, Unit, Nothing>>()
+        assertSend<RejectService<Unit, Unit>>()
+    }
+
+    @Test
+    fun assertSyncTest() {
+        assertSync<AddSvc>()
+        assertSync<MulSvc>()
+        assertSync<BoxService<Unit, Unit, Nothing>>()
+        assertSync<RejectService<Unit, Unit>>()
+    }
+
+    @Test
+    fun addSvc() =
         runSync {
             val svc = AddSvc(1)
             val res = svc.serve(1)
@@ -33,7 +52,7 @@ class SvcTest {
         }
 
     @Test
-    fun testStaticDispatch() =
+    fun staticDispatch() =
         runSync {
             val services = listOf(AddSvc(1), AddSvc(2), AddSvc(3))
             for ((i, svc) in services.withIndex()) {
@@ -44,7 +63,7 @@ class SvcTest {
         }
 
     @Test
-    fun testDynamicDispatch() =
+    fun dynamicDispatch() =
         runSync {
             val services: List<BoxService<Int, Int, Nothing>> =
                 listOf(
@@ -67,21 +86,39 @@ class SvcTest {
         }
 
     @Test
+    fun serviceArc() =
+        runSync {
+            val svc = AddSvc(1)
+            val res = svc.serve(1)
+            assertTrue(res.isSuccess())
+            assertEquals(2, res.getOrNull())
+        }
+
+    @Test
+    fun boxServiceArc() =
+        runSync {
+            val svc = AddSvc(1).boxed()
+            val res = svc.serve(1)
+            assertTrue(res.isSuccess())
+            assertEquals(2, res.getOrNull())
+        }
+
+    @Test
+    fun rejectSvc() =
+        runSync {
+            val svc = RejectService.default<Int>()
+            val res = svc.serve(1)
+            assertTrue(res.isFailure())
+            assertEquals("Input rejected", res.errorOrNull()?.toString())
+        }
+
+    @Test
     fun testMirrorService() =
         runSync {
             val svc = MirrorService.new<String>()
             val res = svc.serve("hello")
             assertTrue(res.isSuccess())
             assertEquals("hello", res.getOrNull())
-        }
-
-    @Test
-    fun testRejectService() =
-        runSync {
-            val svc = RejectService.default<Int>()
-            val res = svc.serve(1)
-            assertTrue(res.isFailure())
-            assertEquals("Input rejected", res.errorOrNull()?.toString())
         }
 
     @Test
