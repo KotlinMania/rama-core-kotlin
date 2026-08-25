@@ -28,10 +28,8 @@ import RamaCore
 // Add more meaningful per-API tests below as the Swift Export surface
 // grows. For now the import + a single passing assertion is the
 // canary that the pipeline is green for this repo.
-@Suite("RamaCore Swift Export Smoke Tests")
-struct RamaCoreExportTests {
-    @Test("RamaCore swift module imported cleanly")
-    func testSwiftModuleLoads() {
-        #expect(Bool(true))
+@Suite struct RamaCoreExportTests {
+    @Test func testSwiftModuleLoads() throws {
+        #expect(Bool(true), "RamaCore swift module imported cleanly")
     }
 }

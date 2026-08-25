@@ -114,6 +114,169 @@ class JsonStreamTest {
     }
 
     @Test
+    fun testTwoItemsInManyInputsWithRest() {
+        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":12,\"v")
+        engine.input("alue\":3")
+        engine.input("4}\n{\"key")
+        engine.input("\":56,\"valu")
+        engine.input("e\":78}\n{\"key\":")
+
+        assertEquals(TestStruct(12, 34), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(56, 78), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testInputCompletingPreviousRestThenMultipleCompleteItemsAndMoreRest() {
+        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":9,\"value\":")
+        engine.input("8}\n{\"key\":7,\"value\":6}\n{\"key\":5,\"value\":4}\n{\"key\":")
+        engine.input("3,\"value\":2}\n{")
+
+        assertEquals(TestStruct(9, 8), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(7, 6), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(5, 4), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(3, 2), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testErroneousEntryEmittedAsJsonError() {
+        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":1}\n{\"key\":1,\"value\":1}\n")
+
+        val r1 = engine.pop()
+        assertTrue(r1 != null && r1.isFailure)
+        val r2 = engine.pop()
+        assertTrue(r2 != null && r2.isSuccess)
+        assertEquals(TestStruct(1, 1), r2.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testErrorFromSplitEntry() {
+        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":100,\"value\":200}\n{\"key\":")
+        engine.input("\"should be a number\",\"value\":0}\n{\"key\":300,\"value\":400}\n")
+
+        assertEquals(TestStruct(100, 200), engine.pop()?.getOrThrow())
+        val r2 = engine.pop()
+        assertTrue(r2 != null && r2.isFailure)
+        assertEquals(TestStruct(300, 400), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testOldDataIsDiscarded() {
+        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val count = 20
+        engine.input("{ \"key\": 1, ")
+        for (i in 0 until count - 1) {
+            engine.input("\"value\": 2 }\r\n{ \"key\": 1, ")
+        }
+        engine.input("\"value\": 2 }\r\n")
+
+        assertEquals(count, engine.queuedCount)
+    }
+
+    @Test
+    fun testDoesNotRaiseErrorWhenParsingEmptyLineWithCarriageReturnInIgnoreEmptyMode() {
+        val config = ParseConfig.DEFAULT.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":1,\"value\":2}\r\n\r\n{\"key\":3,\"value\":4}\n")
+
+        assertEquals(TestStruct(1, 2), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(3, 4), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testRaisesErrorWhenParsingNonEmptyBlankLineInIgnoreEmptyMode() {
+        val config = ParseConfig.DEFAULT.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":1,\"value\":2}\n \t\r\n{\"key\":3,\"value\":4}\n")
+
+        assertEquals(TestStruct(1, 2), engine.pop()?.getOrThrow())
+        val r2 = engine.pop()
+        assertTrue(r2 != null && r2.isFailure)
+        assertEquals(TestStruct(3, 4), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testDoesNotRaiseErrorWhenParsingNonEmptyBlankLineInIgnoreBlankMode() {
+        val config = ParseConfig.DEFAULT.withEmptyLineHandling(EmptyLineHandling.IgnoreBlank)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input("{\"key\":1,\"value\":2}\n \t\r\n{\"key\":3,\"value\":4}\n")
+
+        assertEquals(TestStruct(1, 2), engine.pop()?.getOrThrow())
+        assertEquals(TestStruct(3, 4), engine.pop()?.getOrThrow())
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testFinalizeRaisesErrorOnInvalidRest() {
+        val config = ParseConfig.DEFAULT.withParseRest(true)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input("invalid json")
+        engine.finish()
+
+        val r = engine.pop()
+        assertTrue(r != null && r.isFailure)
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testFinalizeIgnoresEmptyRestEvenIfEmptyLineHandlingIsParseAlways() {
+        val config =
+            ParseConfig.DEFAULT
+                .withEmptyLineHandling(EmptyLineHandling.ParseAlways)
+                .withParseRest(true)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.finish()
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testFinalizeIgnoresEmptyRestIfEmptyLineHandlingIsIgnoreEmpty() {
+        val config =
+            ParseConfig.DEFAULT
+                .withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty)
+                .withParseRest(true)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.finish()
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testFinalizeDoesNotIgnoreNonEmptyBlankRestIfEmptyLineHandlingIsIgnoreEmpty() {
+        val config =
+            ParseConfig.DEFAULT
+                .withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty)
+                .withParseRest(true)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input(" ")
+        engine.finish()
+
+        val r = engine.pop()
+        assertTrue(r != null && r.isFailure)
+        assertNull(engine.pop())
+    }
+
+    @Test
+    fun testFinalizeIgnoresNonEmptyBlankRestIfEmptyLineHandlingIsIgnoreBlank() {
+        val config =
+            ParseConfig.DEFAULT
+                .withEmptyLineHandling(EmptyLineHandling.IgnoreBlank)
+                .withParseRest(true)
+        val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        engine.input(" ")
+        engine.finish()
+        assertNull(engine.pop())
+    }
+
+    @Test
     fun testFinishParsesValidRest() {
         val config = ParseConfig.DEFAULT.withParseRest(true)
         val engine = NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
@@ -207,42 +370,47 @@ class JsonStreamTest {
         }
 
     @Test
-    fun testJsonStreamSimple() = runTest {
-        val inputs = listOf(
-            "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}",
-            "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}",
-            "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}\n",
-            "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}\n",
-        )
+    fun testJsonStreamSimple() =
+        runTest {
+            val inputs =
+                listOf(
+                    "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}",
+                    "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}",
+                    "{\"bar\":\"foo\"}\n{\"bar\":\"qux\"}\n{\"bar\":\"baz\"}\n",
+                    "{\"bar\": \"foo\"}\n{\"bar\": \"qux\"}\n{\"bar\": \"baz\"}\n",
+                )
 
-        for (input in inputs) {
-            val readStream = JsonReadStream.fromStringFlow(flowOf(input)) { json.decodeFromString<Data>(it) }
-            val results = readStream.toFlow().toList().map { it.getOrThrow() }
-            assertEquals(listOf(Data("foo"), Data("qux"), Data("baz")), results)
+            for (input in inputs) {
+                val readStream = JsonReadStream.fromStringFlow(flowOf(input)) { json.decodeFromString<Data>(it) }
+                val results = readStream.toFlow().toList().map { it.getOrThrow() }
+                assertEquals(listOf(Data("foo"), Data("qux"), Data("baz")), results)
+            }
         }
-    }
 
     @Test
-    fun writeReadPendingEmpty() = runTest {
-        val writeStream = JsonWriteStream.new(emptyFlow<Int>()) { it.toString() }
-        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
-        val collected = readStream.toFlow().toList()
-        assertTrue(collected.isEmpty())
-    }
+    fun writeReadPendingEmpty() =
+        runTest {
+            val writeStream = JsonWriteStream.new(emptyFlow<Int>()) { it.toString() }
+            val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+            val collected = readStream.toFlow().toList()
+            assertTrue(collected.isEmpty())
+        }
 
     @Test
-    fun writeReadOnce() = runTest {
-        val writeStream = JsonWriteStream.new(flowOf(1)) { it.toString() }
-        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
-        val collected = readStream.toFlow().toList().map { it.getOrThrow() }
-        assertEquals(listOf(1), collected)
-    }
+    fun writeReadOnce() =
+        runTest {
+            val writeStream = JsonWriteStream.new(flowOf(1)) { it.toString() }
+            val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+            val collected = readStream.toFlow().toList().map { it.getOrThrow() }
+            assertEquals(listOf(1), collected)
+        }
 
     @Test
-    fun writeReadTwice() = runTest {
-        val writeStream = JsonWriteStream.new(flowOf(4, 2)) { it.toString() }
-        val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
-        val collected = readStream.toFlow().toList().map { it.getOrThrow() }
-        assertEquals(listOf(4, 2), collected)
-    }
+    fun writeReadTwice() =
+        runTest {
+            val writeStream = JsonWriteStream.new(flowOf(4, 2)) { it.toString() }
+            val readStream = JsonReadStream.fromStringFlow(writeStream.toFlow()) { it.toInt() }
+            val collected = readStream.toFlow().toList().map { it.getOrThrow() }
+            assertEquals(listOf(4, 2), collected)
+        }
 }

@@ -1,7 +1,6 @@
 // port-lint: source layer/limit/layer.rs
 package io.github.kotlinmania.ramacore.layer.limit
 
-import io.github.kotlinmania.ramacore.RamaResult
 import io.github.kotlinmania.ramacore.layer.Layer
 import io.github.kotlinmania.ramacore.layer.limit.policy.Policy
 import io.github.kotlinmania.ramacore.layer.limit.policy.UnlimitedPolicy
