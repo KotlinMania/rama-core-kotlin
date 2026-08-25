@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class RewindTest {
     @Test
-    fun testRewindPartial() =
+    fun partialRewind() =
         runTest {
             val underlying = byteArrayOf(104, 101, 108, 108, 111)
             val mock = HeapReader.new(underlying)
@@ -32,7 +32,7 @@ class RewindTest {
         }
 
     @Test
-    fun testRewindFull() =
+    fun fullRewind() =
         runTest {
             val underlying = byteArrayOf(104, 101, 108, 108, 111)
             val mock = HeapReader.new(underlying)

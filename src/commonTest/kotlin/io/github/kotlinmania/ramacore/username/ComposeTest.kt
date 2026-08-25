@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 
 class ComposeTest {
     @Test
-    fun testParseComposeUsernameLabels() {
+    fun parseComposeUsernameLabels() {
         val composedUsername = "john-foo-bar-baz"
 
         val ext = Extensions()

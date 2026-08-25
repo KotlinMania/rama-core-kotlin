@@ -34,4 +34,14 @@ class HandlerTest {
             assertTrue(res.isSuccess())
             assertEquals("zero-arg", res.value)
         }
+
+    private fun <T> assertSendSync(t: T) {
+        // Send + Sync static assertion translated for Kotlin
+    }
+
+    @Test
+    fun testServiceFnWithoutUsage() {
+        assertSendSync(serviceFn<Unit, Unit, Nothing> { RamaResult.ok(Unit) })
+        assertSendSync(serviceFn<String, Unit, Nothing> { RamaResult.ok(Unit) })
+    }
 }

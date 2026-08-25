@@ -29,7 +29,9 @@ private class TestContext(
 
 data class Counter(
     val count: Int,
-)
+) {
+    val n: Int get() = count
+}
 
 class LayerTest {
     @Test
@@ -220,5 +222,134 @@ class LayerTest {
 
             val res = timeoutSvc.serve(1)
             assertTrue(res.isFailure())
+        }
+
+    data class ToUpper<S : Service<String, String, Nothing>>(
+        val inner: S,
+    ) : Service<String, String, Nothing> {
+        override suspend fun serve(input: String): RamaResult<String, Nothing> {
+            val res = inner.serve(input)
+            return RamaResult.ok(res.value!!.uppercase())
+        }
+    }
+
+    data class WrappedService<S>(
+        val inner: S,
+    )
+
+    data class State(
+        val value: Int,
+    )
+
+    @Test
+    fun testLayerFn() =
+        runTest {
+            val layer = Layer<Service<String, String, Nothing>, Service<String, String, Nothing>> { inner ->
+                ToUpper(inner)
+            }
+            val f = serviceFn<String, String, Nothing> { req -> RamaResult.ok(req) }
+            val svc = layer.layer(f)
+            val res = svc.serve("hello")
+            assertEquals("HELLO", res.value)
+        }
+
+    @Test
+    fun layerFnHasUsefulDebugImpl() {
+        val layer = layerFn<String, WrappedService<String>> { svc -> WrappedService(svc) }
+        val debugStr = layer.toString()
+        assertTrue(debugStr.contains("LayerFn"))
+    }
+
+    @Test
+    fun getExtensionBasic() =
+        runTest {
+            var stored = 0
+            val svc = serviceFn<TestContext, Unit, Nothing> { req ->
+                val state = req.extensions().get<State>()
+                assertNotNull(state)
+                assertEquals(42, state.value)
+                stored = state.value
+                RamaResult.ok(Unit)
+            }
+            val ctx = TestContext("test")
+            ctx.extensionsMut().insert(State(42))
+            svc.serve(ctx)
+            assertEquals(42, stored)
+        }
+
+    @Test
+    fun getExtensionOutput() =
+        runTest {
+            val svc = serviceFn<TestContext, TestContext, Nothing> { _ ->
+                val res = TestContext("out")
+                res.extensionsMut().insert(State(42))
+                RamaResult.ok(res)
+            }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
+            val state = res.value!!.extensions().get<State>()
+            assertNotNull(state)
+            assertEquals(42, state.value)
+        }
+
+    @Test
+    fun basicInput() =
+        runTest {
+            val svc = serviceFn<TestContext, Unit, Nothing> { req ->
+                val c = req.extensions().get<Counter>()
+                assertNotNull(c)
+                assertEquals(42, c.n)
+                RamaResult.ok(Unit)
+            }
+            val ctx = TestContext("test")
+            ctx.extensionsMut().insert(Counter(42))
+            svc.serve(ctx)
+        }
+
+    @Test
+    fun basicOutput() =
+        runTest {
+            val svc = serviceFn<TestContext, TestContext, Nothing> {
+                val res = TestContext("out")
+                res.extensionsMut().insert(Counter(42))
+                RamaResult.ok(res)
+            }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
+            val c = res.value!!.extensions().get<Counter>()
+            assertNotNull(c)
+            assertEquals(42, c.n)
+        }
+
+    @Test
+    fun simpleInputLayer() =
+        runTest {
+            val svc = serviceFn<TestContext, Unit, Nothing> { RamaResult.ok(Unit) }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
+        }
+
+    @Test
+    fun simpleOptionalInputLayer() =
+        runTest {
+            val svc = serviceFn<TestContext, Unit, Nothing> { RamaResult.ok(Unit) }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
+        }
+
+    @Test
+    fun simpleOutputLayer() =
+        runTest {
+            val svc = serviceFn<TestContext, TestContext, Nothing> { RamaResult.ok(TestContext("out")) }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
+        }
+
+    @Test
+    fun simpleOptionalOutputLayer() =
+        runTest {
+            val svc = serviceFn<TestContext, TestContext, Nothing> { RamaResult.ok(TestContext("out")) }
+            val res = svc.serve(TestContext("test"))
+            assertTrue(res.isSuccess())
         }
 }

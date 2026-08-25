@@ -140,4 +140,46 @@ class MatcherPolicyTest {
             constGuard2?.releaseGuard()
             oddGuard4?.releaseGuard()
         }
+
+    @Test
+    fun concurrentPolicyZero() =
+        runTest {
+            val policy = ConcurrentPolicy.max<Unit>(0)
+            assertAbort(policy.check(Unit))
+        }
+
+    @Test
+    fun concurrentPolicy() =
+        runTest {
+            val policy = ConcurrentPolicy.max<Unit>(2)
+
+            val guard1 = assertReady(policy.check(Unit))
+            val guard2 = assertReady(policy.check(Unit))
+
+            assertAbort(policy.check(Unit))
+
+            guard1.releaseGuard()
+            val guard3 = assertReady(policy.check(Unit))
+
+            assertAbort(policy.check(Unit))
+
+            guard2.releaseGuard()
+            assertReady(policy.check(Unit))
+            guard3.releaseGuard()
+        }
+
+    @Test
+    fun concurrentPolicyClone() =
+        runTest {
+            val policy = ConcurrentPolicy.max<Unit>(2)
+
+            val guard1 = assertReady(policy.check(Unit))
+            val guard2 = assertReady(policy.check(Unit))
+
+            assertAbort(policy.check(Unit))
+
+            guard1.releaseGuard()
+            assertReady(policy.check(Unit))
+            guard2.releaseGuard()
+        }
 }

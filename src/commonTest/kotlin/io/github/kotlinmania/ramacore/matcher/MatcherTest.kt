@@ -405,7 +405,19 @@ class MatcherTest {
         assertNull(ext3.get<Marker.Odd>())
     }
 
+    @Test
+    fun testBox() {
+        val b0: Matcher<Int> = NumberConstMatcher(0)
+        assertTrue(b0.matches(null, 0))
+        val b1: Matcher<Int> = NumberConstMatcher(1)
+        assertFalse(b1.matches(null, 0))
+    }
+
     data class MyMarker(
+        val id: Int,
+    )
+
+    data class MyOtherMarker(
         val id: Int,
     )
 
@@ -428,5 +440,22 @@ class MatcherTest {
         val holderEmpty = SimpleExtHolder(extEmpty)
         assertFalse(constMatcher.matches(null, holderEmpty))
         assertFalse(fnMatcher.matches(null, holderEmpty))
+    }
+
+    @Test
+    fun testFnExtensionMatcher() {
+        val matcher = ExtensionMatcher.withFn<MyMarker> { it.id % 2 == 0 }
+        val req = Extensions()
+
+        assertFalse(matcher.matches(null, SimpleExtHolder(req)))
+
+        req.insert(MyMarker(4))
+        assertTrue(matcher.matches(null, SimpleExtHolder(req)))
+
+        req.insert(MyMarker(5))
+        assertFalse(matcher.matches(null, SimpleExtHolder(req)))
+
+        req.insert(MyOtherMarker(4))
+        assertFalse(matcher.matches(null, SimpleExtHolder(req)))
     }
 }

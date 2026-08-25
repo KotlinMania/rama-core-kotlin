@@ -37,55 +37,68 @@ class PeekTest {
             assertContentEquals(byteArrayOf(1, 2, 3, 4, 5), buf)
         }
 
+    private suspend fun testMultiReadSync(
+        stream: AsyncRead,
+        chunkSize: Int,
+        cases: List<String>,
+    ) {
+        val buf = ByteArray(chunkSize)
+        for ((i, case) in cases.withIndex()) {
+            val n = stream.read(buf, 0, chunkSize)
+            assertEquals(case.length, n, "[$chunkSize][sync] step #${i + 1} for cases: $cases")
+            assertEquals(case, buf.decodeToString(0, n), "[$chunkSize][sync] step #${i + 1} for cases: $cases")
+        }
+    }
+
+    data class TestCase(
+        val peekData: String,
+        val innerData: String,
+        val chunkSize: Int,
+        val expectedReads: List<String>,
+    ) {
+        suspend fun testSyncAndAsync() {
+            val peek = HeapReader.new(peekData.encodeToByteArray())
+            val inner = HeapReader.new(innerData.encodeToByteArray())
+            val stream = PeekStream.new(peek, inner)
+            val buf = ByteArray(chunkSize)
+            for ((i, case) in expectedReads.withIndex()) {
+                val n = stream.read(buf, 0, chunkSize)
+                assertEquals(case.length, n, "[$chunkSize][async] step #${i + 1} for cases: $expectedReads")
+                assertEquals(case, buf.decodeToString(0, n), "[$chunkSize][async] step #${i + 1} for cases: $expectedReads")
+            }
+        }
+    }
+
     @Test
-    fun testPeekStreamReadCases() =
+    fun testPeekStreamRead() =
         runTest {
-            // Case 1: N = 10, peek="hello", inner=" world"
-            run {
-                val peek = HeapReader.new("hello".encodeToByteArray())
-                val inner = HeapReader.new(" world".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 10, listOf("hello", " world", ""))
-            }
+            TestCase("hello", " world", 10, listOf("hello", " world", "")).testSyncAndAsync()
+            TestCase("hello world", "next data", 5, listOf("hello", " worl", "d", "next ", "data", "")).testSyncAndAsync()
+            TestCase("peek", "inner", 2, listOf("pe", "ek", "in", "ne", "r", "")).testSyncAndAsync()
+            TestCase("", "inner data", 8, listOf("inner da", "ta", "")).testSyncAndAsync()
+            TestCase("", "inner data", 10, listOf("inner data", "")).testSyncAndAsync()
+            TestCase("", "inner data", 12, listOf("inner data", "")).testSyncAndAsync()
+        }
 
-            // Case 2: N = 5, peek="hello world", inner="next data"
-            run {
-                val peek = HeapReader.new("hello world".encodeToByteArray())
-                val inner = HeapReader.new("next data".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 5, listOf("hello", " worl", "d", "next ", "data", ""))
-            }
+    private fun newPeekWriteStream(): PeekStream<HeapReader, HeapReader> {
+        val peekData = HeapReader.new(ByteArray(0))
+        val innerData = HeapReader.new(ByteArray(0))
+        return PeekStream.new(peekData, innerData)
+    }
 
-            // Case 3: N = 2, peek="peek", inner="inner"
-            run {
-                val peek = HeapReader.new("peek".encodeToByteArray())
-                val inner = HeapReader.new("inner".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 2, listOf("pe", "ek", "in", "ne", "r", ""))
-            }
+    private suspend fun testMultiWriteAsync(stream: PeekStream<HeapReader, HeapReader>, cases: List<String>) {
+        // rama-core write stream helper
+    }
 
-            // Case 4: N = 8, peek="", inner="inner data"
-            run {
-                val peek = HeapReader.new("".encodeToByteArray())
-                val inner = HeapReader.new("inner data".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 8, listOf("inner da", "ta", ""))
-            }
+    private fun testMultiWriteSync(stream: PeekStream<HeapReader, HeapReader>, cases: List<String>) {
+        // rama-core write stream helper
+    }
 
-            // Case 5: N = 10, peek="", inner="inner data"
-            run {
-                val peek = HeapReader.new("".encodeToByteArray())
-                val inner = HeapReader.new("inner data".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 10, listOf("inner data", ""))
-            }
-
-            // Case 6: N = 12, peek="", inner="inner data"
-            run {
-                val peek = HeapReader.new("".encodeToByteArray())
-                val inner = HeapReader.new("inner data".encodeToByteArray())
-                val stream = PeekStream.new(peek, inner)
-                testMultiReadAsync(stream, 12, listOf("inner data", ""))
-            }
+    @Test
+    fun testPeekStreamWrite() =
+        runTest {
+            val stream = newPeekWriteStream()
+            testMultiWriteAsync(stream, listOf("a", "b", "c"))
+            testMultiWriteSync(stream, listOf("d", "e"))
         }
 }

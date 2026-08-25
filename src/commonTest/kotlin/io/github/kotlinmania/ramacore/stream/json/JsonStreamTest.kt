@@ -32,6 +32,25 @@ private data class Data(
     val bar: String,
 )
 
+@Serializable
+private data class OrderEvent(
+    val item: String,
+    val quantity: Int,
+    val prepaid: Boolean,
+)
+
+private class SingleThenPanicIter(
+    private var data: String?,
+) : Iterator<String> {
+    override fun hasNext(): Boolean = data != null
+
+    override fun next(): String {
+        val res = data ?: throw IllegalStateException("iterator queried twice")
+        data = null
+        return res
+    }
+}
+
 class JsonStreamTest {
     private val json = Json { ignoreUnknownKeys = true }
 
