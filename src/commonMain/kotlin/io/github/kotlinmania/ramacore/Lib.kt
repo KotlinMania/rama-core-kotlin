@@ -5,9 +5,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 /**
- * Re-exports and future utilities matching `rama_core`.
+ * Re-exports and future utilities matching Rama core.
  *
- * Learn more about `rama`:
+ * Learn more about Rama:
  * - Github: https://github.com/plabayo/rama
  * - Book: https://ramaproxy.org/book/
  */
@@ -21,7 +21,7 @@ public data class ZipResult<out A, out B>(
 )
 
 /**
- * Future utilities matching `rama_core::futures`.
+ * Future utilities matching Rama futures.
  */
 public object RamaFutures {
     /**
