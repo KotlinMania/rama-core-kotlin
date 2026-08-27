@@ -51,5 +51,7 @@ public data class ParseConfig(
 
     public companion object {
         public val DEFAULT: ParseConfig = ParseConfig()
+
+        public fun default(): ParseConfig = DEFAULT
     }
 }

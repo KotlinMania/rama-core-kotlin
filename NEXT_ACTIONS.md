@@ -5,13 +5,13 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 59/60 (98.3%)
-- **Function parity:** 181/412 matched (target 721) — 43.9%
-- **Class/type parity:** 86/193 matched (target 197) — 44.6%
-- **Combined symbol parity:** 267/605 matched (target 918) — 44.1%
-- **Average inline-code cosine:** 0.27 (function body across 45 matched files)
+- **Function parity:** 208/412 matched (target 739) — 50.5%
+- **Class/type parity:** 89/193 matched (target 203) — 46.1%
+- **Combined symbol parity:** 297/605 matched (target 942) — 49.1%
+- **Average inline-code cosine:** 0.31 (function body across 45 matched files)
 - **Average documentation cosine:** 0.57 (doc text across 45 matched files)
-- **Cheat-zeroed Files:** 20
-- **Critical Issues:** 54 files with <0.60 function similarity
+- **Cheat-zeroed Files:** 18
+- **Critical Issues:** 53 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -87,12 +87,12 @@ Every matched file is listed below with function and type symbol parity.
 ### 6. json.engine
 
 - **Target:** `json.Engine`
-- **Similarity:** 0.08
+- **Similarity:** 0.10
 - **Dependents:** 0
-- **Priority Score:** 313809.2
-- **Functions:** 5/36 matched (target 43)
-- **Missing functions:** `is_blank`, `finalize`, `default`, `collect_output`, `no_input`, `incomplete_input`, `single_exact_input`, `single_item_split_into_two_inputs`, `two_items_in_single_input`, `two_items_in_many_inputs_with_rest`, `input_completing_previous_rest_then_multiple_complete_items_and_more_rest`, `carriage_return_handled_gracefully`, `whitespace_handled_gracefully`, `erroneous_entry_emitted_as_json_error`, `error_from_split_entry`, `old_data_is_discarded`, `configured_engine`, `engine_with_empty_line_handling`, `raises_error_when_parsing_empty_line_in_parse_always_mode`, `does_not_raise_error_when_parsing_empty_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_empty_line_with_carriage_return_in_ignore_empty_mode`, `raises_error_when_parsing_non_empty_blank_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_non_empty_blank_line_in_ignore_blank_mode`, `finalize_ignores_rest_if_parse_rest_is_false`, `finalize_parses_valid_rest`, `finalize_raises_error_on_invalid_rest`, `finalize_ignores_empty_rest_even_if_empty_line_handling_is_parse_always`, `finalize_ignores_empty_rest_if_empty_line_handling_is_ignore_empty`, `finalize_does_not_ignore_non_empty_blank_rest_if_empty_line_handling_is_ignore_empty`, `finalize_ignores_non_empty_blank_rest_if_empty_line_handling_is_ignore_blank`, `finalize_is_idempotent`
-- **Types:** 2/2 matched (target 7)
+- **Priority Score:** 283809.0
+- **Functions:** 8/36 matched (target 35)
+- **Missing functions:** `collect_output`, `no_input`, `incomplete_input`, `single_exact_input`, `single_item_split_into_two_inputs`, `two_items_in_single_input`, `two_items_in_many_inputs_with_rest`, `input_completing_previous_rest_then_multiple_complete_items_and_more_rest`, `carriage_return_handled_gracefully`, `whitespace_handled_gracefully`, `erroneous_entry_emitted_as_json_error`, `error_from_split_entry`, `old_data_is_discarded`, `configured_engine`, `engine_with_empty_line_handling`, `raises_error_when_parsing_empty_line_in_parse_always_mode`, `does_not_raise_error_when_parsing_empty_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_empty_line_with_carriage_return_in_ignore_empty_mode`, `raises_error_when_parsing_non_empty_blank_line_in_ignore_empty_mode`, `does_not_raise_error_when_parsing_non_empty_blank_line_in_ignore_blank_mode`, `finalize_ignores_rest_if_parse_rest_is_false`, `finalize_parses_valid_rest`, `finalize_raises_error_on_invalid_rest`, `finalize_ignores_empty_rest_even_if_empty_line_handling_is_parse_always`, `finalize_ignores_empty_rest_if_empty_line_handling_is_ignore_empty`, `finalize_does_not_ignore_non_empty_blank_rest_if_empty_line_handling_is_ignore_empty`, `finalize_ignores_non_empty_blank_rest_if_empty_line_handling_is_ignore_blank`, `finalize_is_idempotent`
+- **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 - **Tests:** 0/28 matched
 
@@ -108,19 +108,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 2/8 matched
 
-### 8. stream.json.stream.read
-
-- **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Read`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 191910.0
-- **Functions:** 0/16 matched (target 3)
-- **Missing functions:** `new`, `new_with_config`, `into_inner`, `poll_next`, `next`, `pending_stream_results_in_pending_item`, `empty_stream_results_in_empty_results`, `singleton_iter_with_single_json_line`, `multiple_iter_items_compose_single_json_line`, `wrapped_stream_not_queried_while_sufficient_data_remains`, `stream_with_parse_always_config_respects_config`, `stream_with_ignore_empty_config_respects_config`, `stream_with_parse_rest_handles_valid_finalization`, `stream_with_parse_rest_handles_invalid_finalization`, `stream_without_parse_rest_does_not_handle_finalization`, `fallible_stream_operates_correctly_with_interspersed_errors`
-- **Types:** 0/3 matched (target 1)
-- **Missing types:** `Item`, `TestStruct`, `SingleThenPanicIter`
-- **Tests:** 0/12 matched
-
-### 9. stream.read
+### 8. stream.read
 
 - **Target:** `stream.Read`
 - **Similarity:** 0.27
@@ -132,7 +120,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 3/6 matched
 
-### 10. svc_input
+### 9. svc_input
 
 - **Target:** `ramacore.SvcInput`
 - **Similarity:** 0.06
@@ -143,19 +131,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 3)
 - **Missing types:** _none_
 
-### 11. json.codec
-
-- **Target:** `json.Codec`
-- **Similarity:** 0.23
-- **Dependents:** 0
-- **Priority Score:** 122007.7
-- **Functions:** 6/15 matched (target 10)
-- **Missing functions:** `clone`, `default`, `encode_single_value_no_leading_newline`, `encode_multiple_values_separated_by_newline_without_trailing_newline`, `roundtrip_structs_encode_then_decode_all`, `decode_incremental_streaming_chunks`, `decode_reports_error_for_malformed_json_line`, `decode_order_events`, `decode_order_events_random_chunks`
-- **Types:** 2/5 matched (target 2)
-- **Missing types:** `Error`, `Item`, `OrderEvent`
-- **Tests:** 0/7 matched
-
-### 12. layer.consume_err
+### 10. layer.consume_err
 
 - **Target:** `layer.ConsumeErr`
 - **Similarity:** 0.13
@@ -166,7 +142,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/8 matched (target 4)
 - **Missing types:** `Output`, `Error`, `Service`, `Trace`, `DefaultOutput`, `StaticOutput`
 
-### 13. policy.concurrent
+### 11. policy.concurrent
 
 - **Target:** `policy.Concurrent`
 - **Similarity:** 0.23
@@ -178,7 +154,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`, `ConcurrentCounterGuard`
 - **Tests:** 0/5 matched
 
-### 14. stream.rewind
+### 12. stream.rewind
 
 - **Target:** `stream.Rewind`
 - **Similarity:** 0.34
@@ -190,19 +166,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 2/4 matched
 
-### 15. service.handler
+### 13. service.handler
 
-- **Target:** `service.Handler [ZERO]`
-- **Similarity:** 0.00
+- **Target:** `service.Handler`
+- **Similarity:** 0.25
 - **Dependents:** 0
-- **Priority Score:** 91510.0
+- **Priority Score:** 91507.5
 - **Functions:** 5/10 matched (target 14)
 - **Missing functions:** `call`, `fmt`, `clone`, `from_input`, `assert_send_sync`
 - **Types:** 1/5 matched (target 3)
 - **Missing types:** `Factory`, `Output`, `Error`, `FromInput`
 - **Tests:** 2/3 matched
 
-### 16. layer.layer_fn
+### 14. layer.layer_fn
 
 - **Target:** `layer.LayerFn`
 - **Similarity:** 0.31
@@ -214,7 +190,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `ToUpper`, `Output`, `Error`, `WrappedService`
 - **Tests:** 0/3 matched
 
-### 17. conversion
+### 15. conversion
 
 - **Target:** `ramacore.Conversion`
 - **Similarity:** 0.21
@@ -225,7 +201,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/6 matched (target 1)
 - **Missing types:** `RamaFrom`, `RamaInto`, `RamaTryFrom`, `Error`, `RamaTryInto`, `FromRef`
 
-### 18. service.svc
+### 16. service.svc
 
 - **Target:** `service.Svc [ZERO]`
 - **Similarity:** 0.00
@@ -237,7 +213,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Output`, `Error`, `DynService`
 - **Tests:** 6/8 matched
 
-### 19. layer.get_extension
+### 17. layer.get_extension
 
 - **Target:** `layer.GetExtension`
 - **Similarity:** 0.31
@@ -249,7 +225,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `Output`, `Error`, `State`
 - **Tests:** 0/2 matched
 
-### 20. matcher.ext
+### 18. matcher.ext
 
 - **Target:** `matcher.Ext`
 - **Similarity:** 0.26
@@ -262,19 +238,31 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/2 matched
 - **Lint issues:** 1
 
-### 21. stream.write
+### 19. json.codec
 
-- **Target:** `stream.Write`
-- **Similarity:** 0.11
+- **Target:** `json.Codec`
+- **Similarity:** 0.35
 - **Dependents:** 0
-- **Priority Score:** 81008.9
-- **Functions:** 2/8 matched (target 4)
-- **Missing functions:** `into_inner`, `poll_next`, `pending_stream_results_in_pending_item`, `empty_stream_results_in_empty_results`, `iter_with_single_json_line`, `iter_with_two_json_lines`
-- **Types:** 0/2 matched (target 1)
-- **Missing types:** `Item`, `TestStruct`
-- **Tests:** 0/4 matched
+- **Priority Score:** 72006.5
+- **Functions:** 10/15 matched (target 14)
+- **Missing functions:** `clone`, `default`, `decode_reports_error_for_malformed_json_line`, `decode_order_events`, `decode_order_events_random_chunks`
+- **Types:** 3/5 matched (target 4)
+- **Missing types:** `Error`, `OrderEvent`
+- **Tests:** 4/7 matched
 
-### 22. layer.mod
+### 20. stream.json.stream.read
+
+- **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Read`
+- **Similarity:** 0.26
+- **Dependents:** 0
+- **Priority Score:** 71907.4
+- **Functions:** 11/16 matched
+- **Missing functions:** `new`, `new_with_config`, `into_inner`, `poll_next`, `next`
+- **Types:** 1/3 matched (target 4)
+- **Missing types:** `Item`, `TestStruct`
+- **Tests:** 11/12 matched
+
+### 21. layer.mod
 
 - **Target:** `layer.Mod [STUB]`
 - **Similarity:** 0.00
@@ -286,7 +274,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Layer`, `Service`, `MaybeLayeredSvc`, `Error`, `Output`
 - **Tests:** 4/4 matched
 
-### 23. layer.add_extension
+### 22. layer.add_extension
 
 - **Target:** `layer.AddExtension`
 - **Similarity:** 0.60
@@ -298,7 +286,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `Output`, `Error`, `Counter`
 - **Tests:** 0/2 matched
 
-### 24. layer.map_err
+### 23. layer.map_err
 
 - **Target:** `layer.MapErr`
 - **Similarity:** 0.28
@@ -309,7 +297,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 25. layer.map_output
+### 24. layer.map_output
 
 - **Target:** `layer.MapOutput`
 - **Similarity:** 0.28
@@ -320,7 +308,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 26. layer.trace_err
+### 25. layer.trace_err
 
 - **Target:** `layer.TraceErr`
 - **Similarity:** 0.31
@@ -331,7 +319,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 4)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 27. layer.map_input
+### 26. layer.map_input
 
 - **Target:** `layer.MapInput`
 - **Similarity:** 0.31
@@ -342,7 +330,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 28. layer.map_result
+### 27. layer.map_result
 
 - **Target:** `layer.MapResult`
 - **Similarity:** 0.32
@@ -353,7 +341,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 29. matcher.mfn
+### 28. matcher.mfn
 
 - **Target:** `matcher.Mfn`
 - **Similarity:** 0.09
@@ -364,7 +352,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/3 matched (target 1)
 - **Missing types:** `MatchFnBox`, `Sealed`
 
-### 30. timeout.mod
+### 29. timeout.mod
 
 - **Target:** `timeout.Mod [STUB]`
 - **Similarity:** 0.00
@@ -374,6 +362,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `with`
 - **Types:** 1/4 matched (target 1)
 - **Missing types:** `DefaultTimeout`, `Output`, `Error`
+
+### 30. stream.write
+
+- **Target:** `stream.Write`
+- **Similarity:** 0.24
+- **Dependents:** 0
+- **Priority Score:** 41007.6
+- **Functions:** 6/8 matched
+- **Missing functions:** `into_inner`, `poll_next`
+- **Types:** 0/2 matched (target 3)
+- **Missing types:** `Item`, `TestStruct`
+- **Tests:** 4/4 matched
 
 ### 31. policy.mod
 
@@ -397,19 +397,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `Output`, `Error`, `Service`
 
-### 33. stream.json.stream.mod
-
-- **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Mod [STUB]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 40410.0
-- **Functions:** 0/4 matched (target 0)
-- **Missing functions:** `write_read_pending`, `write_read_pending_empty`, `write_read_once`, `write_read_twice`
-- **Types:** 0/0 matched (target 2)
-- **Missing types:** _none_
-- **Tests:** 0/4 matched
-
-### 34. username.compose
+### 33. username.compose
 
 - **Target:** `username.Compose`
 - **Similarity:** 0.43
@@ -420,7 +408,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/4 matched
 - **Missing types:** `ComposeErrorKind`
 
-### 35. limit.mod
+### 34. limit.mod
 
 - **Target:** `limit.Mod [STUB]`
 - **Similarity:** 0.00
@@ -432,7 +420,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Output`, `Error`
 - **Tests:** 3/4 matched
 
-### 36. layer.into_error
+### 35. layer.into_error
 
 - **Target:** `layer.IntoError`
 - **Similarity:** 0.41
@@ -443,18 +431,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `MakeLayerError`, `Error`, `Sealed`
 
-### 37. lib
+### 36. lib
 
-- **Target:** `ramacore.Lib [ZERO]`
-- **Similarity:** 0.00
+- **Target:** `ramacore.Lib`
+- **Similarity:** 0.11
 - **Dependents:** 0
-- **Priority Score:** 30510.0
+- **Priority Score:** 30508.9
 - **Functions:** 2/4 matched (target 5)
 - **Missing functions:** `take_zip_from_parts`, `poll`
 - **Types:** 0/1 matched (target 3)
 - **Missing types:** `Output`
 
-### 38. limit.into_output
+### 37. limit.into_output
 
 - **Target:** `limit.IntoOutput`
 - **Similarity:** 0.27
@@ -465,7 +453,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/4 matched (target 1)
 - **Missing types:** `ErrorIntoOutput`, `Output`, `Error`
 
-### 39. username.parse
+### 38. username.parse
 
 - **Target:** `username.Parse`
 - **Similarity:** 0.73
@@ -477,7 +465,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`
 - **Tests:** 9/9 matched
 
-### 40. timeout.layer
+### 39. timeout.layer
 
 - **Target:** `timeout.Layer`
 - **Similarity:** 0.51
@@ -488,19 +476,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `Service`
 
-### 41. json.mod
-
-- **Target:** `json.Mod [STUB]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 20210.0
-- **Functions:** 0/1 matched (target 0)
-- **Missing functions:** `test_json_stream_simple`
-- **Types:** 0/1 matched (target 2)
-- **Missing types:** `Data`
-- **Tests:** 0/1 matched
-
-### 42. opentelemetry.attributes
+### 40. opentelemetry.attributes
 
 - **Target:** `opentelemetry.Attributes`
 - **Similarity:** 0.00
@@ -511,7 +487,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/1 matched (target 2)
 - **Missing types:** `AttributesFactory`
 
-### 43. matcher.mod
+### 41. matcher.mod
 
 - **Target:** `matcher.Mod [STUB]`
 - **Similarity:** 0.00
@@ -522,18 +498,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 3)
 - **Missing types:** `Matcher`
 
-### 44. json.config
+### 42. stream.json.stream.mod
 
-- **Target:** `json.Config`
+- **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Mod [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
-- **Priority Score:** 10310.0
-- **Functions:** 0/1 matched (target 2)
-- **Missing functions:** `default`
-- **Types:** 2/2 matched
+- **Priority Score:** 10410.0
+- **Functions:** 3/4 matched (target 3)
+- **Missing functions:** `write_read_pending`
+- **Types:** 0/0 matched (target 3)
 - **Missing types:** _none_
+- **Tests:** 3/4 matched
 
-### 45. timeout.error
+### 43. timeout.error
 
 - **Target:** `timeout.Error`
 - **Similarity:** 0.42
@@ -544,7 +521,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 46. username.mod
+### 44. username.mod
 
 - **Target:** `username.Mod [STUB]`
 - **Similarity:** 0.00
@@ -556,7 +533,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
 
-### 47. stream.mod
+### 45. stream.mod
 
 - **Target:** `stream.Mod [STUB]`
 - **Similarity:** 0.00
@@ -567,7 +544,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/1 matched
 - **Missing types:** `Stream`
 
-### 48. matcher.op_not
+### 46. matcher.op_not
 
 - **Target:** `matcher.OpNot`
 - **Similarity:** 0.40
@@ -577,6 +554,29 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+
+### 47. json.config
+
+- **Target:** `json.Config`
+- **Similarity:** 0.74
+- **Dependents:** 0
+- **Priority Score:** 302.6
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 2/2 matched
+- **Missing types:** _none_
+
+### 48. json.mod
+
+- **Target:** `json.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 210.0
+- **Functions:** 1/1 matched
+- **Missing functions:** _none_
+- **Types:** 1/1 matched (target 4)
+- **Missing types:** _none_
+- **Tests:** 1/1 matched
 
 ### 49. opentelemetry.mod
 
@@ -633,18 +633,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
 
-### 54. telemetry.tracing
-
-- **Target:** `telemetry.Tracing [ZERO]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 11)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 2)
-- **Missing types:** _none_
-
-### 55. telemetry.mod
+### 54. telemetry.mod
 
 - **Target:** `telemetry.Mod [STUB]`
 - **Similarity:** 0.00
@@ -655,18 +644,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 4)
 - **Missing types:** _none_
 
-### 56. combinators.either
+### 55. telemetry.tracing
 
-- **Target:** `combinators.Either [ZERO]`
+- **Target:** `telemetry.Tracing [ZERO]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 140)
+- **Functions:** 0/0 matched (target 11)
 - **Missing functions:** _none_
-- **Types:** 0/0 matched (target 18)
+- **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 57. graceful
+### 56. graceful
 
 - **Target:** `graceful.Mod [ZERO]`
 - **Similarity:** 0.00
@@ -675,6 +664,17 @@ Every matched file is listed below with function and type symbol parity.
 - **Functions:** 0/0 matched (target 20)
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 6)
+- **Missing types:** _none_
+
+### 57. combinators.either
+
+- **Target:** `combinators.Either [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched (target 140)
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 18)
 - **Missing types:** _none_
 
 ### 58. service.mod
