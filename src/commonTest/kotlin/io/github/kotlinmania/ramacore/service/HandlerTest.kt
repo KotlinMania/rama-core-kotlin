@@ -36,7 +36,7 @@ class HandlerTest {
         }
 
     private fun <T> assertSendSync(t: T) {
-        // Send + Sync static assertion translated for Kotlin
+        // Concurrency check translated for Kotlin
     }
 
     @Test
