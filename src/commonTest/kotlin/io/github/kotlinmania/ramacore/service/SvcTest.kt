@@ -24,6 +24,7 @@ class SvcTest {
     }
 
     private fun <T> assertSend() {}
+
     private fun <T> assertSync() {}
 
     @Test

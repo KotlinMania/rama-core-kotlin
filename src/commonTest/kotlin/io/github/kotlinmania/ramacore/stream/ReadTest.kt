@@ -3,10 +3,7 @@ package io.github.kotlinmania.ramacore.stream
 
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ReadTest {
     private suspend fun testMultiReadSync(
