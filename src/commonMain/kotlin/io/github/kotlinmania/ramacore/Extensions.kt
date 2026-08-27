@@ -128,8 +128,7 @@ public interface ExtensionsRef {
 /**
  * Anything that can yield a mutable view of its [Extensions] store.
  *
- * Implementors of [ExtensionsMut] are also [ExtensionsRef]; the same
- * trait-hierarchy relation exists in upstream Rust.
+ * Implementors of [ExtensionsMut] are also [ExtensionsRef].
  */
 public interface ExtensionsMut : ExtensionsRef {
     public fun extensionsMut(): Extensions
