@@ -30,11 +30,12 @@ public object RamaFutures {
     public suspend fun <T1, T2> zip(
         op1: suspend () -> T1,
         op2: suspend () -> T2,
-    ): ZipResult<T1, T2> = coroutineScope {
-        val f1 = async { op1() }
-        val f2 = async { op2() }
-        ZipResult(f1.await(), f2.await())
-    }
+    ): ZipResult<T1, T2> =
+        coroutineScope {
+            val f1 = async { op1() }
+            val f2 = async { op2() }
+            ZipResult(f1.await(), f2.await())
+        }
 
     /**
      * Joins two fallible operations, waiting for both to complete or one of them to error.
@@ -42,17 +43,18 @@ public object RamaFutures {
     public suspend fun <T1 : Any, T2 : Any, E : Any> tryZip(
         op1: suspend () -> RamaResult<T1, E>,
         op2: suspend () -> RamaResult<T2, E>,
-    ): RamaResult<ZipResult<T1, T2>, E> = coroutineScope {
-        val f1 = async { op1() }
-        val f2 = async { op2() }
-        val r1 = f1.await()
-        if (r1.isFailure()) {
-            return@coroutineScope RamaResult.err(r1.errorOrNull()!!)
+    ): RamaResult<ZipResult<T1, T2>, E> =
+        coroutineScope {
+            val f1 = async { op1() }
+            val f2 = async { op2() }
+            val r1 = f1.await()
+            if (r1.isFailure()) {
+                return@coroutineScope RamaResult.err(r1.errorOrNull()!!)
+            }
+            val r2 = f2.await()
+            if (r2.isFailure()) {
+                return@coroutineScope RamaResult.err(r2.errorOrNull()!!)
+            }
+            RamaResult.ok(ZipResult(r1.getOrNull()!!, r2.getOrNull()!!))
         }
-        val r2 = f2.await()
-        if (r2.isFailure()) {
-            return@coroutineScope RamaResult.err(r2.errorOrNull()!!)
-        }
-        RamaResult.ok(ZipResult(r1.getOrNull()!!, r2.getOrNull()!!))
-    }
 }

@@ -244,9 +244,10 @@ class LayerTest {
     @Test
     fun testLayerFn() =
         runTest {
-            val layer = Layer<Service<String, String, Nothing>, Service<String, String, Nothing>> { inner ->
-                ToUpper(inner)
-            }
+            val layer =
+                Layer<Service<String, String, Nothing>, Service<String, String, Nothing>> { inner ->
+                    ToUpper(inner)
+                }
             val f = serviceFn<String, String, Nothing> { req -> RamaResult.ok(req) }
             val svc = layer.layer(f)
             val res = svc.serve("hello")
@@ -264,13 +265,14 @@ class LayerTest {
     fun getExtensionBasic() =
         runTest {
             var stored = 0
-            val svc = serviceFn<TestContext, Unit, Nothing> { req ->
-                val state = req.extensions().get<State>()
-                assertNotNull(state)
-                assertEquals(42, state.value)
-                stored = state.value
-                RamaResult.ok(Unit)
-            }
+            val svc =
+                serviceFn<TestContext, Unit, Nothing> { req ->
+                    val state = req.extensions().get<State>()
+                    assertNotNull(state)
+                    assertEquals(42, state.value)
+                    stored = state.value
+                    RamaResult.ok(Unit)
+                }
             val ctx = TestContext("test")
             ctx.extensionsMut().insert(State(42))
             svc.serve(ctx)
@@ -280,11 +282,12 @@ class LayerTest {
     @Test
     fun getExtensionOutput() =
         runTest {
-            val svc = serviceFn<TestContext, TestContext, Nothing> { _ ->
-                val res = TestContext("out")
-                res.extensionsMut().insert(State(42))
-                RamaResult.ok(res)
-            }
+            val svc =
+                serviceFn<TestContext, TestContext, Nothing> { _ ->
+                    val res = TestContext("out")
+                    res.extensionsMut().insert(State(42))
+                    RamaResult.ok(res)
+                }
             val res = svc.serve(TestContext("test"))
             assertTrue(res.isSuccess())
             val state = res.value!!.extensions().get<State>()
@@ -295,12 +298,13 @@ class LayerTest {
     @Test
     fun basicInput() =
         runTest {
-            val svc = serviceFn<TestContext, Unit, Nothing> { req ->
-                val c = req.extensions().get<Counter>()
-                assertNotNull(c)
-                assertEquals(42, c.n)
-                RamaResult.ok(Unit)
-            }
+            val svc =
+                serviceFn<TestContext, Unit, Nothing> { req ->
+                    val c = req.extensions().get<Counter>()
+                    assertNotNull(c)
+                    assertEquals(42, c.n)
+                    RamaResult.ok(Unit)
+                }
             val ctx = TestContext("test")
             ctx.extensionsMut().insert(Counter(42))
             svc.serve(ctx)
@@ -309,11 +313,12 @@ class LayerTest {
     @Test
     fun basicOutput() =
         runTest {
-            val svc = serviceFn<TestContext, TestContext, Nothing> {
-                val res = TestContext("out")
-                res.extensionsMut().insert(Counter(42))
-                RamaResult.ok(res)
-            }
+            val svc =
+                serviceFn<TestContext, TestContext, Nothing> {
+                    val res = TestContext("out")
+                    res.extensionsMut().insert(Counter(42))
+                    RamaResult.ok(res)
+                }
             val res = svc.serve(TestContext("test"))
             assertTrue(res.isSuccess())
             val c = res.value!!.extensions().get<Counter>()
