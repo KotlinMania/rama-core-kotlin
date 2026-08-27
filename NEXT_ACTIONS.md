@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 58/60 (96.7%)
-- **Function parity:** 179/408 matched (target 716) — 43.9%
-- **Class/type parity:** 86/192 matched (target 194) — 44.8%
-- **Combined symbol parity:** 265/600 matched (target 910) — 44.2%
-- **Average inline-code cosine:** 0.28 (function body across 44 matched files)
-- **Average documentation cosine:** 0.57 (doc text across 44 matched files)
-- **Cheat-zeroed Files:** 19
-- **Critical Issues:** 53 files with <0.60 function similarity
+- **Files Present:** 59/60 (98.3%)
+- **Function parity:** 181/412 matched (target 721) — 43.9%
+- **Class/type parity:** 86/193 matched (target 197) — 44.6%
+- **Combined symbol parity:** 267/605 matched (target 918) — 44.1%
+- **Average inline-code cosine:** 0.27 (function body across 45 matched files)
+- **Average documentation cosine:** 0.57 (doc text across 45 matched files)
+- **Cheat-zeroed Files:** 20
+- **Critical Issues:** 54 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -443,7 +443,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `MakeLayerError`, `Error`, `Sealed`
 
-### 37. limit.into_output
+### 37. lib
+
+- **Target:** `ramacore.Lib [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 30510.0
+- **Functions:** 2/4 matched (target 5)
+- **Missing functions:** `take_zip_from_parts`, `poll`
+- **Types:** 0/1 matched (target 3)
+- **Missing types:** `Output`
+
+### 38. limit.into_output
 
 - **Target:** `limit.IntoOutput`
 - **Similarity:** 0.27
@@ -454,7 +465,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/4 matched (target 1)
 - **Missing types:** `ErrorIntoOutput`, `Output`, `Error`
 
-### 38. username.parse
+### 39. username.parse
 
 - **Target:** `username.Parse`
 - **Similarity:** 0.73
@@ -466,7 +477,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`
 - **Tests:** 9/9 matched
 
-### 39. timeout.layer
+### 40. timeout.layer
 
 - **Target:** `timeout.Layer`
 - **Similarity:** 0.51
@@ -476,17 +487,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `into_layer`
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `Service`
-
-### 40. opentelemetry.attributes
-
-- **Target:** `opentelemetry.Attributes`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 20210.0
-- **Functions:** 0/1 matched (target 6)
-- **Missing functions:** `attributes`
-- **Types:** 0/1 matched (target 2)
-- **Missing types:** `AttributesFactory`
 
 ### 41. json.mod
 
@@ -500,7 +500,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Data`
 - **Tests:** 0/1 matched
 
-### 42. matcher.mod
+### 42. opentelemetry.attributes
+
+- **Target:** `opentelemetry.Attributes`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 20210.0
+- **Functions:** 0/1 matched (target 6)
+- **Missing functions:** `attributes`
+- **Types:** 0/1 matched (target 2)
+- **Missing types:** `AttributesFactory`
+
+### 43. matcher.mod
 
 - **Target:** `matcher.Mod [STUB]`
 - **Similarity:** 0.00
@@ -511,7 +522,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 3)
 - **Missing types:** `Matcher`
 
-### 43. json.config
+### 44. json.config
 
 - **Target:** `json.Config`
 - **Similarity:** 0.00
@@ -522,7 +533,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 44. timeout.error
+### 45. timeout.error
 
 - **Target:** `timeout.Error`
 - **Similarity:** 0.42
@@ -533,7 +544,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 45. username.mod
+### 46. username.mod
 
 - **Target:** `username.Mod [STUB]`
 - **Similarity:** 0.00
@@ -545,7 +556,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
 
-### 46. stream.mod
+### 47. stream.mod
 
 - **Target:** `stream.Mod [STUB]`
 - **Similarity:** 0.00
@@ -556,7 +567,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/1 matched
 - **Missing types:** `Stream`
 
-### 47. matcher.op_not
+### 48. matcher.op_not
 
 - **Target:** `matcher.OpNot`
 - **Similarity:** 0.40
@@ -567,7 +578,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 48. opentelemetry.mod
+### 49. opentelemetry.mod
 
 - **Target:** `opentelemetry.Mod [STUB]`
 - **Similarity:** 0.00
@@ -578,7 +589,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 49. matcher.op_and
+### 50. matcher.op_and
 
 - **Target:** `matcher.OpAnd`
 - **Similarity:** 0.19
@@ -589,7 +600,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 50. matcher.op_or
+### 51. matcher.op_or
 
 - **Target:** `matcher.OpOr`
 - **Similarity:** 0.19
@@ -600,7 +611,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 51. rt.future
+### 52. rt.future
 
 - **Target:** `rt.Future`
 - **Similarity:** 0.22
@@ -611,7 +622,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 52. combinators.mod
+### 53. combinators.mod
 
 - **Target:** `combinators.Mod [STUB]`
 - **Similarity:** 0.00
@@ -622,7 +633,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
 
-### 53. telemetry.tracing
+### 54. telemetry.tracing
 
 - **Target:** `telemetry.Tracing [ZERO]`
 - **Similarity:** 0.00
@@ -633,7 +644,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 54. telemetry.mod
+### 55. telemetry.mod
 
 - **Target:** `telemetry.Mod [STUB]`
 - **Similarity:** 0.00
@@ -644,7 +655,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 4)
 - **Missing types:** _none_
 
-### 55. combinators.either
+### 56. combinators.either
 
 - **Target:** `combinators.Either [ZERO]`
 - **Similarity:** 0.00
@@ -655,7 +666,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 18)
 - **Missing types:** _none_
 
-### 56. graceful
+### 57. graceful
 
 - **Target:** `graceful.Mod [ZERO]`
 - **Similarity:** 0.00
@@ -666,7 +677,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 6)
 - **Missing types:** _none_
 
-### 57. service.mod
+### 58. service.mod
 
 - **Target:** `service.Mod [STUB]`
 - **Similarity:** 0.00
@@ -677,7 +688,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
 
-### 58. rt.mod
+### 59. rt.mod
 
 - **Target:** `rt.Mod [STUB]`
 - **Similarity:** 0.00
@@ -696,17 +707,4 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
-
-## Reexport / Wiring Modules
-
-These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
-normal priority and missing-file ladders because they are wiring
-modules, not direct logic ports. Consult them for call-site routing;
-do not treat them as the next implementation target by default.
-
-### Missing
-
-| Source | Expected target | Deps | Source path | Expected path |
-|--------|-----------------|------|-------------|---------------|
-| `lib` | `Lib` | 0 | `lib.rs` | `Lib.kt` |
 
