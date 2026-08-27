@@ -1,5 +1,9 @@
 // port-lint: source stream/json/engine.rs
+@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
+
 package io.github.kotlinmania.ramacore.stream.json
+
+import kotlin.native.HiddenFromObjC
 
 /**
  * The low-level engine parsing NDJSON data given as byte slices or strings into objects of type `T`.
@@ -104,12 +108,29 @@ public class NdjsonEngine<T>(
         }
     }
 
+    public fun isBlank(text: String): Boolean = text.isBlank()
+
+    /**
+     * Finalizes parsing the rest leftover from previous calls to [input], if configured.
+     * This function is idempotent.
+     */
+    @HiddenFromObjC
+    public fun finalize() {
+        finish()
+    }
+
     public companion object {
         /**
          * Creates a new [NdjsonEngine] with default config.
          */
         public fun <T> new(deserializer: (String) -> T): NdjsonEngine<T> =
             NdjsonEngine(ParseConfig.DEFAULT, deserializer)
+
+        /**
+         * Creates a new [NdjsonEngine] with default config.
+         */
+        public fun <T> default(deserializer: (String) -> T): NdjsonEngine<T> =
+            new(deserializer)
 
         /**
          * Creates a new [NdjsonEngine] with custom config.

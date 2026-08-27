@@ -87,11 +87,11 @@ class PeekTest {
     }
 
     private suspend fun testMultiWriteAsync(stream: PeekStream<HeapReader, HeapReader>, cases: List<String>) {
-        // rama-core write stream helper
+        // Write stream helper
     }
 
     private fun testMultiWriteSync(stream: PeekStream<HeapReader, HeapReader>, cases: List<String>) {
-        // rama-core write stream helper
+        // Write stream helper
     }
 
     @Test
