@@ -1,4 +1,4 @@
-// port-lint: tests stream/peek.rs
+// port-lint: tests rama-core/src/stream/peek.rs
 package io.github.kotlinmania.ramacore.stream
 
 import kotlinx.coroutines.test.runTest

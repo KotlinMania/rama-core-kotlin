@@ -1,4 +1,4 @@
-// port-lint: tests username/compose.rs
+// port-lint: tests rama-core/src/username/compose.rs
 package io.github.kotlinmania.ramacore.username
 
 import io.github.kotlinmania.ramacore.Extensions

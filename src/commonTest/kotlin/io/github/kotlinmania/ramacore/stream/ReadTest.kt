@@ -1,4 +1,4 @@
-// port-lint: tests stream/read.rs
+// port-lint: tests rama-core/src/stream/read.rs
 package io.github.kotlinmania.ramacore.stream
 
 import kotlinx.coroutines.test.runTest

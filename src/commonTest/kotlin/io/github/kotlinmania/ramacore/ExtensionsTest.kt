@@ -1,4 +1,4 @@
-// port-lint: tests extensions.rs
+// port-lint: tests rama-core/src/extensions.rs
 package io.github.kotlinmania.ramacore
 
 import kotlin.test.Test

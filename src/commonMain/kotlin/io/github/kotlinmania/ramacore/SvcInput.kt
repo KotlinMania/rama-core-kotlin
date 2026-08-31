@@ -1,4 +1,4 @@
-// port-lint: source svc_input.rs
+// port-lint: source rama-core/src/svc_input.rs
 package io.github.kotlinmania.ramacore
 
 /**
