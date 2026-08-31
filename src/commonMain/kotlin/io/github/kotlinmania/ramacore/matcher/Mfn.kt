@@ -1,4 +1,4 @@
-// port-lint: source matcher/mfn.rs
+// port-lint: source rama-core/src/matcher/mfn.rs
 package io.github.kotlinmania.ramacore.matcher
 
 import io.github.kotlinmania.ramacore.Extensions

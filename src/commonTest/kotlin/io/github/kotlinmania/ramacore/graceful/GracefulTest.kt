@@ -1,4 +1,4 @@
-// port-lint: tests graceful.rs
+// port-lint: tests rama-core/src/graceful.rs
 package io.github.kotlinmania.ramacore.graceful
 
 import kotlinx.coroutines.test.runTest

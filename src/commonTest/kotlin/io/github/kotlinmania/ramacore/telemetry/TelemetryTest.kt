@@ -1,4 +1,4 @@
-// port-lint: tests telemetry/opentelemetry/attributes.rs
+// port-lint: tests rama-core/src/telemetry/opentelemetry/attributes.rs
 // port-lint: tests telemetry/tracing.rs
 package io.github.kotlinmania.ramacore.telemetry
 

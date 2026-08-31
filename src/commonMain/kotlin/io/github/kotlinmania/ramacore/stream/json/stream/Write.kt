@@ -1,4 +1,4 @@
-// port-lint: source stream/json/stream/write.rs
+// port-lint: source rama-core/src/stream/json/stream/write.rs
 package io.github.kotlinmania.ramacore.stream.json.stream
 
 import io.github.kotlinmania.ramacore.stream.json.JsonEncoder

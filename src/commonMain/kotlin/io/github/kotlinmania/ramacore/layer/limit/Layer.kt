@@ -1,4 +1,4 @@
-// port-lint: source layer/limit/layer.rs
+// port-lint: source rama-core/src/layer/limit/layer.rs
 package io.github.kotlinmania.ramacore.layer.limit
 
 import io.github.kotlinmania.ramacore.layer.Layer

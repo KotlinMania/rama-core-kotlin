@@ -1,4 +1,4 @@
-// port-lint: tests layer/mod.rs
+// port-lint: tests rama-core/src/layer/mod.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.Extensions

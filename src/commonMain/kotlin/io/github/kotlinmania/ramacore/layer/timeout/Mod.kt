@@ -1,4 +1,4 @@
-// port-lint: source layer/timeout/mod.rs
+// port-lint: source rama-core/src/layer/timeout/mod.rs
 package io.github.kotlinmania.ramacore.layer.timeout
 
 import io.github.kotlinmania.ramacore.RamaResult
