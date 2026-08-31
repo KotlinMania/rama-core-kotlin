@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/rt/executor.rs
+// port-lint: tests rt/executor.rs
 package io.github.kotlinmania.ramacore.rt
 
 import io.github.kotlinmania.ramacore.graceful.Shutdown

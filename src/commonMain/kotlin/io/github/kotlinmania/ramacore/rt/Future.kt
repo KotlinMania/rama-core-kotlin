@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/rt/future.rs
+// port-lint: source rt/future.rs
 package io.github.kotlinmania.ramacore.rt
 
 import kotlinx.coroutines.Deferred

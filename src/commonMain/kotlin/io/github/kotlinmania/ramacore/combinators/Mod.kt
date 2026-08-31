@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/combinators/mod.rs
+// port-lint: source combinators/mod.rs
 package io.github.kotlinmania.ramacore.combinators
 
 /**

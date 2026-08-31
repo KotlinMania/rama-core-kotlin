@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/layer/limit/into_output.rs
+// port-lint: source layer/limit/into_output.rs
 package io.github.kotlinmania.ramacore.layer.limit
 
 import io.github.kotlinmania.ramacore.RamaResult

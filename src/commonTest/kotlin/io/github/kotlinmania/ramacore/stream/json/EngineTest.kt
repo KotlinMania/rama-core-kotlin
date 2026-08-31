@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/stream/json/engine.rs
+// port-lint: tests stream/json/engine.rs
 package io.github.kotlinmania.ramacore.stream.json
 
 import kotlinx.serialization.Serializable

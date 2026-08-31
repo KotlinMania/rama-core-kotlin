@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/stream/json/mod.rs
+// port-lint: tests stream/json/mod.rs
 package io.github.kotlinmania.ramacore.stream.json
 
 import io.github.kotlinmania.ramacore.stream.json.stream.JsonReadStream
