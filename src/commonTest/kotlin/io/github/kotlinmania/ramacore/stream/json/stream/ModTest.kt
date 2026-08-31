@@ -1,4 +1,4 @@
-// port-lint: tests stream/json/stream/mod.rs
+// port-lint: tests rama-core/src/stream/json/stream/mod.rs
 package io.github.kotlinmania.ramacore.stream.json.stream
 
 import kotlinx.coroutines.flow.emptyFlow

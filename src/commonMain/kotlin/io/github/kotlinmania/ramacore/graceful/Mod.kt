@@ -1,4 +1,4 @@
-// port-lint: source graceful.rs
+// port-lint: source rama-core/src/graceful.rs
 package io.github.kotlinmania.ramacore.graceful
 
 import kotlinx.coroutines.CompletableDeferred

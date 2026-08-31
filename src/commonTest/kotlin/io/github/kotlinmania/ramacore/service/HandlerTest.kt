@@ -1,4 +1,4 @@
-// port-lint: tests service/handler.rs
+// port-lint: tests rama-core/src/service/handler.rs
 package io.github.kotlinmania.ramacore.service
 
 import io.github.kotlinmania.ramacore.RamaResult

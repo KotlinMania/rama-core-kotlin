@@ -1,4 +1,4 @@
-// port-lint: tests stream/rewind.rs
+// port-lint: tests rama-core/src/stream/rewind.rs
 package io.github.kotlinmania.ramacore.stream
 
 import kotlinx.coroutines.test.runTest
