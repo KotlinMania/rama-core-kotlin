@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/stream/json/stream/write.rs
+// port-lint: tests stream/json/stream/write.rs
 package io.github.kotlinmania.ramacore.stream.json.stream
 
 import kotlinx.coroutines.flow.asFlow

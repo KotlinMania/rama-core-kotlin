@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/extensions.rs
+// port-lint: source extensions.rs
 package io.github.kotlinmania.ramacore
 
 import kotlin.reflect.KClass

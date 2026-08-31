@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/rt/future.rs
+// port-lint: tests rt/future.rs
 package io.github.kotlinmania.ramacore.rt
 
 import kotlinx.coroutines.CompletableDeferred

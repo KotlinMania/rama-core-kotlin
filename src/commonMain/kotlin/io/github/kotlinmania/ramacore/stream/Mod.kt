@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/stream/mod.rs
+// port-lint: source stream/mod.rs
 package io.github.kotlinmania.ramacore.stream
 
 /**

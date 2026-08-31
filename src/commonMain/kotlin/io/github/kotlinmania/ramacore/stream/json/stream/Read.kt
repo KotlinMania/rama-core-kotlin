@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/stream/json/stream/read.rs
+// port-lint: source stream/json/stream/read.rs
 package io.github.kotlinmania.ramacore.stream.json.stream
 
 import io.github.kotlinmania.ramacore.stream.json.NdjsonEngine

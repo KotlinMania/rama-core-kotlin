@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.ramacore
 
 import kotlinx.coroutines.async

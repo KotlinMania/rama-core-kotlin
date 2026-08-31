@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/username/compose.rs
+// port-lint: source username/compose.rs
 package io.github.kotlinmania.ramacore.username
 
 import io.github.kotlinmania.ramacore.RamaResult
