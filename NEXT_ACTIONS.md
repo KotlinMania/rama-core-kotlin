@@ -8,9 +8,9 @@ Based on AST analysis, here are the concrete next steps.
 - **Function parity:** 208/385 matched (target 739) — 54.0%
 - **Class/type parity:** 89/186 matched (target 203) — 47.8%
 - **Combined symbol parity:** 297/571 matched (target 942) — 52.0%
-- **Average inline-code cosine:** 0.31 (function body across 45 matched files)
-- **Average documentation cosine:** 0.57 (doc text across 45 matched files)
-- **Cheat-zeroed Files:** 18
+- **Average inline-code cosine:** 0.31 (function body across 44 matched files)
+- **Average documentation cosine:** 0.57 (doc text across 44 matched files)
+- **Cheat-zeroed Files:** 19
 - **Critical Issues:** 53 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -27,7 +27,7 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. extensions
+### 1. rama-core.extensions
 
 - **Target:** `ramacore.Extensions`
 - **Similarity:** 0.24
@@ -120,7 +120,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 3/6 matched
 
-### 9. svc_input
+### 9. rama-core.svc_input
 
 - **Target:** `ramacore.SvcInput`
 - **Similarity:** 0.06
@@ -190,7 +190,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Service`, `ToUpper`, `Output`, `Error`, `WrappedService`
 - **Tests:** 0/3 matched
 
-### 15. conversion
+### 15. rama-core.conversion
 
 - **Target:** `ramacore.Conversion`
 - **Similarity:** 0.21
@@ -250,7 +250,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Error`, `OrderEvent`
 - **Tests:** 4/7 matched
 
-### 20. stream.json.stream.read
+### 20. rama-core.stream.json.stream.read
 
 - **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Read`
 - **Similarity:** 0.26
@@ -431,12 +431,12 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `MakeLayerError`, `Error`, `Sealed`
 
-### 36. lib
+### 36. rama-core.lib
 
-- **Target:** `ramacore.Lib`
-- **Similarity:** 0.11
+- **Target:** `ramacore.Lib [STUB]`
+- **Similarity:** 0.00
 - **Dependents:** 0
-- **Priority Score:** 30508.9
+- **Priority Score:** 30510.0
 - **Functions:** 2/4 matched (target 5)
 - **Missing functions:** `take_zip_from_parts`, `poll`
 - **Types:** 0/1 matched (target 3)
@@ -498,7 +498,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 3)
 - **Missing types:** `Matcher`
 
-### 42. stream.json.stream.mod
+### 42. rama-core.stream.json.stream.mod
 
 - **Target:** `commonMain.kotlin.io.github.kotlinmania.ramacore.stream.json.stream.Mod [STUB]`
 - **Similarity:** 0.00
@@ -655,7 +655,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 56. graceful
+### 56. rama-core.graceful
 
 - **Target:** `graceful.Mod [ZERO]`
 - **Similarity:** 0.00
@@ -719,5 +719,5 @@ do not treat them as the next implementation target by default.
 
 | Source | Expected target | Deps | Source path | Expected path |
 |--------|-----------------|------|-------------|---------------|
-| `matcher.test` | `matcher.Test` | 0 | `matcher/test.rs` | `matcher/Test.kt` |
+| `matcher.test` | `ramacore.src.matcher.Test` | 0 | `rama-core/src/matcher/test.rs` | `ramacore/src/matcher/Test.kt` |
 

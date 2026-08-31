@@ -1,4 +1,4 @@
-// port-lint: source layer/timeout/error.rs
+// port-lint: source rama-core/src/layer/timeout/error.rs
 package io.github.kotlinmania.ramacore.layer.timeout
 
 import kotlin.time.Duration

@@ -1,4 +1,4 @@
-// port-lint: source layer/hijack.rs
+// port-lint: source rama-core/src/layer/hijack.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.Extensions

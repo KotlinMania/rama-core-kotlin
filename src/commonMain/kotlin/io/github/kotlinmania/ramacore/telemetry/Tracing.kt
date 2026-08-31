@@ -1,4 +1,4 @@
-// port-lint: source telemetry/tracing.rs
+// port-lint: source rama-core/src/telemetry/tracing.rs
 package io.github.kotlinmania.ramacore.telemetry
 
 /**

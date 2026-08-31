@@ -1,4 +1,4 @@
-// port-lint: source username/mod.rs
+// port-lint: source rama-core/src/username/mod.rs
 package io.github.kotlinmania.ramacore.username
 
 /**

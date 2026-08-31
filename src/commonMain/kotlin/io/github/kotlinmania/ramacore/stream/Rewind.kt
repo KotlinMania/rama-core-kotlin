@@ -1,4 +1,4 @@
-// port-lint: source stream/rewind.rs
+// port-lint: source rama-core/src/stream/rewind.rs
 package io.github.kotlinmania.ramacore.stream
 
 import io.github.kotlinmania.ramacore.Extensions
