@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/layer/limit/policy/concurrent.rs
+// port-lint: source layer/limit/policy/concurrent.rs
 package io.github.kotlinmania.ramacore.layer.limit.policy
 
 import kotlinx.coroutines.sync.Semaphore

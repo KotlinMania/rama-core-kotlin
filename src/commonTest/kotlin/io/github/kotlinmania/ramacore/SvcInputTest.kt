@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/svc_input.rs
+// port-lint: tests svc_input.rs
 package io.github.kotlinmania.ramacore
 
 import kotlin.test.Test

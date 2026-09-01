@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/rt/executor.rs
+// port-lint: source rt/executor.rs
 package io.github.kotlinmania.ramacore.rt
 
 import io.github.kotlinmania.ramacore.graceful.AsyncTaskHandle

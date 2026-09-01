@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/layer/trace_err.rs
+// port-lint: source layer/trace_err.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.RamaResult

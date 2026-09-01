@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/matcher/iter.rs
+// port-lint: source matcher/iter.rs
 package io.github.kotlinmania.ramacore.matcher
 
 import io.github.kotlinmania.ramacore.Extensions
