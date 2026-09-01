@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/layer/add_extension.rs
+// port-lint: source layer/add_extension.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.ExtensionsMut

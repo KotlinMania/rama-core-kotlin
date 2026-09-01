@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/stream/json/codec.rs
+// port-lint: source stream/json/codec.rs
 package io.github.kotlinmania.ramacore.stream.json
 
 /**

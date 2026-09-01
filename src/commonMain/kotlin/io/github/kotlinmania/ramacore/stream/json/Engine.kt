@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/stream/json/engine.rs
+// port-lint: source stream/json/engine.rs
 @file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
 
 package io.github.kotlinmania.ramacore.stream.json

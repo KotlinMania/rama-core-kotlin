@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/stream/read.rs
+// port-lint: source stream/read.rs
 package io.github.kotlinmania.ramacore.stream
 
 import kotlin.math.min

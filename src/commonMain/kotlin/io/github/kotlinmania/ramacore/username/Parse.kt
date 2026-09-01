@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/username/parse.rs
+// port-lint: source username/parse.rs
 package io.github.kotlinmania.ramacore.username
 
 import io.github.kotlinmania.ramacore.Extensions

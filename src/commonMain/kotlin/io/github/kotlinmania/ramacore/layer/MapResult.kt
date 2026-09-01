@@ -1,4 +1,4 @@
-// port-lint: source rama-core/src/layer/map_result.rs
+// port-lint: source layer/map_result.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.RamaResult

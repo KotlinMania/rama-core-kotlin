@@ -1,4 +1,4 @@
-// port-lint: tests rama-core/src/combinators/either.rs
+// port-lint: tests combinators/either.rs
 package io.github.kotlinmania.ramacore.combinators
 
 import kotlin.test.Test
