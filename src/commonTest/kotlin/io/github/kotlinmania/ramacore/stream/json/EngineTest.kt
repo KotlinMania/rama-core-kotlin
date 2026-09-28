@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Serializable
@@ -212,16 +211,18 @@ class EngineTest {
 
     @Test
     fun finalizeParsesValidRest() {
-        val emptyLineHandlings = listOf(
-            EmptyLineHandling.ParseAlways,
-            EmptyLineHandling.IgnoreEmpty,
-            EmptyLineHandling.IgnoreBlank,
-        )
+        val emptyLineHandlings =
+            listOf(
+                EmptyLineHandling.ParseAlways,
+                EmptyLineHandling.IgnoreEmpty,
+                EmptyLineHandling.IgnoreBlank,
+            )
 
         for (emptyLineHandling in emptyLineHandlings) {
-            val engine = configuredEngine {
-                it.withEmptyLineHandling(emptyLineHandling).withParseRest(true)
-            }
+            val engine =
+                configuredEngine {
+                    it.withEmptyLineHandling(emptyLineHandling).withParseRest(true)
+                }
             engine.input("{\"key\":1,\"value\":2}")
             engine.finish()
 
@@ -244,27 +245,30 @@ class EngineTest {
 
     @Test
     fun finalizeIgnoresEmptyRestEvenIfEmptyLineHandlingIsParseAlways() {
-        val engine = configuredEngine {
-            it.withEmptyLineHandling(EmptyLineHandling.ParseAlways).withParseRest(true)
-        }
+        val engine =
+            configuredEngine {
+                it.withEmptyLineHandling(EmptyLineHandling.ParseAlways).withParseRest(true)
+            }
         engine.finish()
         assertTrue(collectOutput(engine).isEmpty())
     }
 
     @Test
     fun finalizeIgnoresEmptyRestIfEmptyLineHandlingIsIgnoreEmpty() {
-        val engine = configuredEngine {
-            it.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty).withParseRest(true)
-        }
+        val engine =
+            configuredEngine {
+                it.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty).withParseRest(true)
+            }
         engine.finish()
         assertTrue(collectOutput(engine).isEmpty())
     }
 
     @Test
     fun finalizeDoesNotIgnoreNonEmptyBlankRestIfEmptyLineHandlingIsIgnoreEmpty() {
-        val engine = configuredEngine {
-            it.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty).withParseRest(true)
-        }
+        val engine =
+            configuredEngine {
+                it.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty).withParseRest(true)
+            }
         engine.input(" ")
         engine.finish()
 
@@ -275,9 +279,10 @@ class EngineTest {
 
     @Test
     fun finalizeIgnoresNonEmptyBlankRestIfEmptyLineHandlingIsIgnoreBlank() {
-        val engine = configuredEngine {
-            it.withEmptyLineHandling(EmptyLineHandling.IgnoreBlank).withParseRest(true)
-        }
+        val engine =
+            configuredEngine {
+                it.withEmptyLineHandling(EmptyLineHandling.IgnoreBlank).withParseRest(true)
+            }
         engine.input(" ")
         engine.finish()
         assertTrue(collectOutput(engine).isEmpty())

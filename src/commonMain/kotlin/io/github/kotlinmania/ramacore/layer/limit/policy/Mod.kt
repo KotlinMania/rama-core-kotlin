@@ -22,7 +22,7 @@ public sealed class PolicyOutput<out Guard, out Error : Any> {
 /**
  * Result of checking a limit policy on an input.
  */
-public data class PolicyResult<Input, out Guard, out Error : Any>(
+public data class PolicyResult<out Input, out Guard, out Error : Any>(
     public val input: Input,
     public val output: PolicyOutput<Guard, Error>,
 )
