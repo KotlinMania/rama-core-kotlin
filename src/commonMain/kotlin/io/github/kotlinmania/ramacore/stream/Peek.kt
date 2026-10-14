@@ -4,6 +4,10 @@ package io.github.kotlinmania.ramacore.stream
 import io.github.kotlinmania.ramacore.Extensions
 import io.github.kotlinmania.ramacore.ExtensionsMut
 import io.github.kotlinmania.ramacore.ExtensionsRef
+import io.github.kotlinmania.tokio.io.AsyncRead
+import io.github.kotlinmania.tokio.io.Context
+import io.github.kotlinmania.tokio.io.Poll
+import io.github.kotlinmania.tokio.io.ReadBuf
 
 /**
  * A stream which has peeked some data of the inner stream,
@@ -23,20 +27,41 @@ public class PeekStream<P : AsyncRead, S : AsyncRead>(
     override fun extensionsMut(): Extensions =
         if (inner is ExtensionsMut) inner.extensionsMut() else extensions()
 
-    override suspend fun read(
+    override fun pollRead(
+        cx: Context,
+        buf: ReadBuf,
+    ): Poll<Result<Unit>> {
+        if (!donePeek) {
+            val before = buf.filled().size
+            when (val res = peek.pollRead(cx, buf)) {
+                is Poll.Ready -> {
+                    if (res.value.isFailure) return res
+                    if (buf.filled().size == before) {
+                        donePeek = true
+                    } else {
+                        return Poll.ready(Result.success(Unit))
+                    }
+                }
+                else -> return Poll.pending()
+            }
+        }
+        return inner.pollRead(cx, buf)
+    }
+
+    public suspend fun read(
         dest: ByteArray,
-        offset: Int,
-        length: Int,
+        offset: Int = 0,
+        length: Int = dest.size - offset,
     ): Int {
         if (!donePeek) {
-            val n = peek.read(dest, offset, length)
+            val n = (peek as AsyncRead).read(dest, offset, length)
             if (n == 0) {
                 donePeek = true
             } else {
                 return n
             }
         }
-        return inner.read(dest, offset, length)
+        return (inner as AsyncRead).read(dest, offset, length)
     }
 
     public companion object {

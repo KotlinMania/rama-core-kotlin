@@ -1,6 +1,7 @@
 // port-lint: tests stream/read.rs
 package io.github.kotlinmania.ramacore.stream
 
+import io.github.kotlinmania.tokio.io.AsyncRead
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

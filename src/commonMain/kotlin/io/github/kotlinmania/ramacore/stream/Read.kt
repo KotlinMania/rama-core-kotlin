@@ -1,21 +1,34 @@
 // port-lint: source stream/read.rs
 package io.github.kotlinmania.ramacore.stream
 
+import io.github.kotlinmania.tokio.io.AsyncRead
+import io.github.kotlinmania.tokio.io.Context
+import io.github.kotlinmania.tokio.io.Poll
+import io.github.kotlinmania.tokio.io.ReadBuf
 import kotlin.math.min
 
 /**
- * Common reader interface for byte streams.
+ * Reads bytes from an [AsyncRead] into [dest] starting at [offset] up to [length] bytes.
+ * Returns the number of bytes read, or 0 if EOF.
  */
-public interface AsyncRead {
-    /**
-     * Reads bytes into [dest] starting at [offset] up to [length] bytes.
-     * Returns the number of bytes read, or 0 if EOF.
-     */
-    public suspend fun read(
-        dest: ByteArray,
-        offset: Int = 0,
-        length: Int = dest.size - offset,
-    ): Int
+public suspend fun AsyncRead.read(
+    dest: ByteArray,
+    offset: Int = 0,
+    length: Int = dest.size - offset,
+): Int {
+    if (length <= 0) return 0
+    val readBuf = ReadBuf(UByteArray(length))
+    return when (val poll = pollRead(Context(), readBuf)) {
+        is Poll.Ready -> {
+            poll.value.getOrThrow()
+            val filled = readBuf.filled()
+            for (i in filled.indices) {
+                dest[offset + i] = filled[i].toByte()
+            }
+            filled.size
+        }
+        else -> 0
+    }
 }
 
 /**
@@ -43,10 +56,24 @@ public class HeapReader(
         position = min(position + n, data.size)
     }
 
-    override suspend fun read(
+    override fun pollRead(
+        cx: Context,
+        buf: ReadBuf,
+    ): Poll<Result<Unit>> {
+        if (position >= data.size) return Poll.ready(Result.success(Unit))
+        val toRead = min(buf.remaining(), remaining())
+        if (toRead > 0) {
+            val slice = UByteArray(toRead) { idx -> data[position + idx].toUByte() }
+            buf.putSlice(slice)
+            position += toRead
+        }
+        return Poll.ready(Result.success(Unit))
+    }
+
+    public suspend fun read(
         dest: ByteArray,
-        offset: Int,
-        length: Int,
+        offset: Int = 0,
+        length: Int = dest.size - offset,
     ): Int {
         if (position >= data.size) return 0
         val toRead = min(length, remaining())
@@ -98,10 +125,24 @@ public class StackReader(
      */
     public fun hasRemaining(): Boolean = remaining() > 0
 
-    override suspend fun read(
+    override fun pollRead(
+        cx: Context,
+        buf: ReadBuf,
+    ): Poll<Result<Unit>> {
+        if (this.offset >= data.size) return Poll.ready(Result.success(Unit))
+        val toCopy = min(buf.remaining(), remaining())
+        if (toCopy > 0) {
+            val slice = UByteArray(toCopy) { idx -> data[this.offset + idx].toUByte() }
+            buf.putSlice(slice)
+            this.offset += toCopy
+        }
+        return Poll.ready(Result.success(Unit))
+    }
+
+    public suspend fun read(
         dest: ByteArray,
-        offset: Int,
-        length: Int,
+        offset: Int = 0,
+        length: Int = dest.size - offset,
     ): Int {
         if (this.offset >= data.size) return 0
         val toCopy = min(length, remaining())
@@ -129,20 +170,41 @@ public class ChainReader<T : AsyncRead, U : AsyncRead>(
 ) : AsyncRead {
     private var doneFirst: Boolean = false
 
-    override suspend fun read(
+    override fun pollRead(
+        cx: Context,
+        buf: ReadBuf,
+    ): Poll<Result<Unit>> {
+        if (!doneFirst) {
+            val before = buf.filled().size
+            when (val res = first.pollRead(cx, buf)) {
+                is Poll.Ready -> {
+                    if (res.value.isFailure) return res
+                    if (buf.filled().size == before) {
+                        doneFirst = true
+                    } else {
+                        return Poll.ready(Result.success(Unit))
+                    }
+                }
+                else -> return Poll.pending()
+            }
+        }
+        return second.pollRead(cx, buf)
+    }
+
+    public suspend fun read(
         dest: ByteArray,
-        offset: Int,
-        length: Int,
+        offset: Int = 0,
+        length: Int = dest.size - offset,
     ): Int {
         if (!doneFirst) {
-            val n = first.read(dest, offset, length)
+            val n = (first as AsyncRead).read(dest, offset, length)
             if (n == 0) {
                 doneFirst = true
             } else {
                 return n
             }
         }
-        return second.read(dest, offset, length)
+        return (second as AsyncRead).read(dest, offset, length)
     }
 
     public companion object {
