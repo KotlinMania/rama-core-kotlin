@@ -4,6 +4,10 @@ package io.github.kotlinmania.ramacore.stream
 import io.github.kotlinmania.ramacore.Extensions
 import io.github.kotlinmania.ramacore.ExtensionsMut
 import io.github.kotlinmania.ramacore.ExtensionsRef
+import io.github.kotlinmania.tokio.io.AsyncRead
+import io.github.kotlinmania.tokio.io.Context
+import io.github.kotlinmania.tokio.io.Poll
+import io.github.kotlinmania.tokio.io.ReadBuf
 import kotlin.math.min
 
 /**
@@ -31,10 +35,32 @@ public class Rewind<T : AsyncRead>(
         this.preOffset = 0
     }
 
-    override suspend fun read(
+    override fun pollRead(
+        cx: Context,
+        buf: ReadBuf,
+    ): Poll<Result<Unit>> {
+        val prefix = pre
+        if (prefix != null && preOffset < prefix.size) {
+            val available = prefix.size - preOffset
+            val toCopy = min(buf.remaining(), available)
+            if (toCopy > 0) {
+                val slice = UByteArray(toCopy) { idx -> prefix[preOffset + idx].toUByte() }
+                buf.putSlice(slice)
+                preOffset += toCopy
+            }
+            if (preOffset >= prefix.size) {
+                pre = null
+                preOffset = 0
+            }
+            return Poll.ready(Result.success(Unit))
+        }
+        return inner.pollRead(cx, buf)
+    }
+
+    public suspend fun read(
         dest: ByteArray,
-        offset: Int,
-        length: Int,
+        offset: Int = 0,
+        length: Int = dest.size - offset,
     ): Int {
         val prefix = pre
         if (prefix != null && preOffset < prefix.size) {
@@ -48,7 +74,7 @@ public class Rewind<T : AsyncRead>(
             }
             return toCopy
         }
-        return inner.read(dest, offset, length)
+        return (inner as AsyncRead).read(dest, offset, length)
     }
 
     public companion object {
