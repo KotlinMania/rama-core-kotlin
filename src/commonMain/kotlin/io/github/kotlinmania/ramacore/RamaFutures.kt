@@ -1,16 +1,7 @@
-// port-lint: source lib.rs
 package io.github.kotlinmania.ramacore
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-
-/**
- * Re-exports and future utilities matching Rama core.
- *
- * Learn more about Rama:
- * - Github: https://github.com/plabayo/rama
- * - Book: https://ramaproxy.org/book/
- */
 
 /**
  * A pair result from combining two asynchronous operations via [RamaFutures.zip].
