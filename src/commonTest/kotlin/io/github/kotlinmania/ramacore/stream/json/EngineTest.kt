@@ -1,22 +1,30 @@
 // port-lint: tests stream/json/engine.rs
 package io.github.kotlinmania.ramacore.stream.json
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import io.github.kotlinmania.serdejson.fromStr
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@Serializable
 private data class TestStruct(
     val key: Long,
     val value: Long,
-)
+) {
+    companion object {
+        fun deserialize(str: String): TestStruct {
+            val v = fromStr(str).getOrThrow()
+            val obj = v.asObject() ?: throw IllegalArgumentException("Expected object")
+            val keyVal = obj.get("key") ?: throw IllegalArgumentException("Missing key")
+            val key = keyVal.asI64() ?: keyVal.asU64()?.toLong() ?: throw IllegalArgumentException("Key not a number")
+            val valVal = obj.get("value") ?: throw IllegalArgumentException("Missing value")
+            val value = valVal.asI64() ?: valVal.asU64()?.toLong() ?: throw IllegalArgumentException("Value not a number")
+            return TestStruct(key, value)
+        }
+    }
+}
 
 class EngineTest {
-    private val json = Json { ignoreUnknownKeys = true }
-
     private fun collectOutput(engine: NdjsonEngine<TestStruct>): List<Result<TestStruct>> {
         val list = mutableListOf<Result<TestStruct>>()
         while (true) {
@@ -30,7 +38,7 @@ class EngineTest {
         configure: (ParseConfig) -> ParseConfig,
     ): NdjsonEngine<TestStruct> {
         val config = configure(ParseConfig.DEFAULT)
-        return NdjsonEngine.withConfig(config) { json.decodeFromString<TestStruct>(it) }
+        return NdjsonEngine.withConfig(config) { TestStruct.deserialize(it) }
     }
 
     private fun engineWithEmptyLineHandling(
@@ -40,20 +48,20 @@ class EngineTest {
 
     @Test
     fun noInput() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         assertTrue(collectOutput(engine).isEmpty())
     }
 
     @Test
     fun incompleteInput() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":3,\"val")
         assertTrue(collectOutput(engine).isEmpty())
     }
 
     @Test
     fun singleExactInput() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":3,\"value\":4}\n")
         val result = collectOutput(engine).iterator()
         assertEquals(TestStruct(3, 4), result.next().getOrThrow())
@@ -62,7 +70,7 @@ class EngineTest {
 
     @Test
     fun singleItemSplitIntoTwoInputs() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":42,")
         engine.input("\"value\":24}\n")
         val result = collectOutput(engine).iterator()
@@ -72,7 +80,7 @@ class EngineTest {
 
     @Test
     fun twoItemsInSingleInput() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":1,\"value\":1}\n{\"key\":2,\"value\":2}\n")
         val result = collectOutput(engine).iterator()
         assertEquals(TestStruct(1, 1), result.next().getOrThrow())
@@ -82,7 +90,7 @@ class EngineTest {
 
     @Test
     fun twoItemsInManyInputsWithRest() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":12,\"v")
         engine.input("alue\":3")
         engine.input("4}\n{\"key")
@@ -97,7 +105,7 @@ class EngineTest {
 
     @Test
     fun inputCompletingPreviousRestThenMultipleCompleteItemsAndMoreRest() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":9,\"value\":")
         engine.input("8}\n{\"key\":7,\"value\":6}\n{\"key\":5,\"value\":4}\n{\"key\":")
         engine.input("3,\"value\":2}\n{")
@@ -112,7 +120,7 @@ class EngineTest {
 
     @Test
     fun carriageReturnHandledGracefully() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":1,\"value\":2}\r\n{\"key\":3,\"value\":4}\r\n")
         val result = collectOutput(engine).iterator()
         assertEquals(TestStruct(1, 2), result.next().getOrThrow())
@@ -122,7 +130,7 @@ class EngineTest {
 
     @Test
     fun whitespaceHandledGracefully() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("\t{ \"key\":\t13,  \"value\":   37 } \r\n")
         val result = collectOutput(engine).iterator()
         assertEquals(TestStruct(13, 37), result.next().getOrThrow())
@@ -131,7 +139,7 @@ class EngineTest {
 
     @Test
     fun erroneousEntryEmittedAsJsonError() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":1}\n{\"key\":1,\"value\":1}\n")
         val result = collectOutput(engine).iterator()
         assertTrue(result.next().isFailure)
@@ -141,7 +149,7 @@ class EngineTest {
 
     @Test
     fun errorFromSplitEntry() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         engine.input("{\"key\":100,\"value\":200}\n{\"key\":")
         engine.input("\"should be a number\",\"value\":0}\n{\"key\":300,\"value\":400}\n")
 
@@ -154,7 +162,7 @@ class EngineTest {
 
     @Test
     fun oldDataIsDiscarded() {
-        val engine = NdjsonEngine.new { json.decodeFromString<TestStruct>(it) }
+        val engine = NdjsonEngine.new { TestStruct.deserialize(it) }
         val count = 20
         engine.input("{ \"key\": 1, ")
         for (i in 0 until count - 1) {

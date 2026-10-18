@@ -1,30 +1,53 @@
 // port-lint: tests stream/json/codec.rs
 package io.github.kotlinmania.ramacore.stream.json
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
+import io.github.kotlinmania.serdejson.Value
+import io.github.kotlinmania.serdejson.fromStr
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@Serializable
 private data class Item(
     val id: Int,
     val name: String,
-)
+) {
+    fun toJson(): String = """{"id":$id,"name":"$name"}"""
 
-@Serializable
+    companion object {
+        fun deserialize(str: String): Item {
+            val v = fromStr(str).getOrThrow()
+            val obj = v.asObject() ?: throw IllegalArgumentException("Expected object")
+            val id =
+                (obj.get("id")?.asI64() ?: obj.get("id")?.asU64()?.toLong())?.toInt()
+                    ?: throw IllegalArgumentException("Missing id")
+            val name = obj.get("name")?.asStr() ?: throw IllegalArgumentException("Missing name")
+            return Item(id, name)
+        }
+    }
+}
+
 private data class OrderEvent(
     val item: String,
     val quantity: Int,
     val prepaid: Boolean,
-)
+) {
+    companion object {
+        fun deserialize(str: String): OrderEvent {
+            val v = fromStr(str).getOrThrow()
+            val obj = v.asObject() ?: throw IllegalArgumentException("Expected object")
+            val item = obj.get("item")?.asStr() ?: throw IllegalArgumentException("Missing item")
+            val quantity =
+                (obj.get("quantity")?.asI64() ?: obj.get("quantity")?.asU64()?.toLong())?.toInt()
+                    ?: throw IllegalArgumentException("Missing quantity")
+            val prepaid =
+                (obj.get("prepaid") as? Value.Bool)?.value
+                    ?: throw IllegalArgumentException("Missing prepaid")
+            return OrderEvent(item, quantity, prepaid)
+        }
+    }
+}
 
 class CodecTest {
-    private val json = Json { ignoreUnknownKeys = true }
-
     @Test
     fun encodeSingleValueNoLeadingNewline() {
         val encoder = JsonEncoder.new<Int> { it.toString() }
@@ -41,7 +64,7 @@ class CodecTest {
 
     @Test
     fun roundtripStructsEncodeThenDecodeAll() {
-        val encoder = JsonEncoder.new<Item> { json.encodeToString(it) }
+        val encoder = JsonEncoder.new<Item> { it.toJson() }
         val input =
             listOf(
                 Item(1, "alice"),
@@ -50,7 +73,7 @@ class CodecTest {
             )
         val encoded = input.joinToString("") { encoder.encode(it) }
 
-        val decoder = JsonDecoder.new { json.decodeFromString<Item>(it) }
+        val decoder = JsonDecoder.new { Item.deserialize(it) }
         val out = mutableListOf<Item>()
         var res = decoder.decode(encoded)
         while (res != null) {
@@ -67,7 +90,7 @@ class CodecTest {
 
     @Test
     fun decodeIncrementalStreamingChunks() {
-        val encoder = JsonEncoder.new<Item> { json.encodeToString(it) }
+        val encoder = JsonEncoder.new<Item> { it.toJson() }
         val items =
             listOf(
                 Item(10, "ten"),
@@ -76,7 +99,7 @@ class CodecTest {
             )
         val full = items.joinToString("") { encoder.encode(it) }
 
-        val decoder = JsonDecoder.new { json.decodeFromString<Item>(it) }
+        val decoder = JsonDecoder.new { Item.deserialize(it) }
         val out = mutableListOf<Item>()
 
         val chunkSize = 7
@@ -102,14 +125,15 @@ class CodecTest {
 
     @Test
     fun decodeReportsErrorForMalformedJsonLine() {
-        val decoder = JsonDecoder.new { json.decodeFromString<JsonObject>(it) }
+        val decoder = JsonDecoder.new { fromStr(it).getOrThrow() }
         val input = "{not valid json}\n{\"ok\": true}\n"
         val res = decoder.decode(input)
         assertTrue(res != null && res.isFailure)
         val next = decoder.decode("")
         if (next != null) {
             assertTrue(next.isSuccess)
-            assertEquals(JsonPrimitive(true), next.getOrThrow()["ok"])
+            val obj = next.getOrThrow().asObject()
+            assertEquals(true, (obj?.get("ok") as? Value.Bool)?.value)
         }
     }
 
@@ -149,7 +173,7 @@ class CodecTest {
 
         var eventCount = 0
         val uniqueEvents = mutableSetOf<String>()
-        val decoder = JsonDecoder.new { json.decodeFromString<OrderEvent>(it) }
+        val decoder = JsonDecoder.new { OrderEvent.deserialize(it) }
 
         for (input in inputs) {
             var res = decoder.decode(input)
@@ -212,7 +236,7 @@ class CodecTest {
             var begin = 0
             var eventCount = 0
             val uniqueEvents = mutableSetOf<String>()
-            val decoder = JsonDecoder.new { json.decodeFromString<OrderEvent>(it) }
+            val decoder = JsonDecoder.new { OrderEvent.deserialize(it) }
 
             while (begin < max) {
                 val end = random.nextInt(begin, max + 1)
