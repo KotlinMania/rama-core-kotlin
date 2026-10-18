@@ -1,4 +1,3 @@
-// port-lint: source layer/mod.rs
 package io.github.kotlinmania.ramacore.layer
 
 import io.github.kotlinmania.ramacore.RamaResult
@@ -62,8 +61,3 @@ public fun <Input, Output : Any, Error : Any> Layer<Service<Input, Output, Error
     } else {
         MaybeLayeredService(inner)
     }
-
-/**
- * Layer type and utilities module ledger.
- */
-internal object LayerModuleLedger

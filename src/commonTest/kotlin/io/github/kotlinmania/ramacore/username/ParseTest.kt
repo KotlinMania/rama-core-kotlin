@@ -181,4 +181,24 @@ class ParseTest {
             )
         assertTrue(parseUsername(ext, p2, "username-foo").isFailure())
     }
+
+    @Test
+    fun parseComposeUsernameLabels() {
+        val composedUsername = "john-foo-bar-baz"
+        val ext = Extensions()
+        val username =
+            parseUsername(
+                ext,
+                UsernameOpaqueLabelParser.new(),
+                composedUsername,
+            )
+        assertTrue(username.isSuccess())
+        assertEquals("john", username.getOrNull())
+        val labels = ext.get<UsernameLabels>()
+        assertTrue(labels != null)
+
+        val composeUsernameResult = composeUsername("john", labels)
+        assertTrue(composeUsernameResult.isSuccess())
+        assertEquals(composedUsername, composeUsernameResult.getOrNull())
+    }
 }

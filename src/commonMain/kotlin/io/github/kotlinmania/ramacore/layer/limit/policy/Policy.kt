@@ -1,4 +1,3 @@
-// port-lint: source layer/limit/policy/mod.rs
 package io.github.kotlinmania.ramacore.layer.limit.policy
 
 /**

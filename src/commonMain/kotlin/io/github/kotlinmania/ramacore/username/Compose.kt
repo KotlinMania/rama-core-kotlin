@@ -118,13 +118,4 @@ public fun stringLabelWriter(label: String): UsernameLabelWriter =
 /**
  * Create a [UsernameLabelWriter] from [UsernameLabels].
  */
-public fun UsernameLabels.asWriter(): UsernameLabelWriter =
-    object : UsernameLabelWriter {
-        override fun writeLabels(composer: Composer): RamaResult<Unit, ComposeError> {
-            for (label in labels) {
-                val res = composer.writeLabel(label)
-                if (res.isFailure()) return res
-            }
-            return RamaResult.ok(Unit)
-        }
-    }
+public fun UsernameLabels.asWriter(): UsernameLabelWriter = this

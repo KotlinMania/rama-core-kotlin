@@ -1,4 +1,3 @@
-// port-lint: tests layer/limit/mod.rs
 // port-lint: tests layer/limit/policy/matcher.rs
 package io.github.kotlinmania.ramacore.layer
 

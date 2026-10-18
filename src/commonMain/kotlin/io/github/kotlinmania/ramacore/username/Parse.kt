@@ -115,7 +115,15 @@ public class UnitUsernameLabelParser : UsernameLabelParser {
  */
 public class UsernameLabels(
     public val labels: List<String>,
-) {
+) : UsernameLabelWriter {
+    override fun writeLabels(composer: Composer): RamaResult<Unit, ComposeError> {
+        for (label in labels) {
+            val res = composer.writeLabel(label)
+            if (res.isFailure()) return res
+        }
+        return RamaResult.ok(Unit)
+    }
+
     override fun toString(): String = "UsernameLabels($labels)"
 
     override fun equals(other: Any?): Boolean = other is UsernameLabels && other.labels == labels

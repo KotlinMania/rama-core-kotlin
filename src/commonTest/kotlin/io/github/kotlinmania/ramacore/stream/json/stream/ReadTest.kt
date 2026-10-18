@@ -3,22 +3,30 @@ package io.github.kotlinmania.ramacore.stream.json.stream
 
 import io.github.kotlinmania.ramacore.stream.json.EmptyLineHandling
 import io.github.kotlinmania.ramacore.stream.json.ParseConfig
+import io.github.kotlinmania.serdejson.fromStr
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@Serializable
 private data class ReadTestStruct(
     val key: Long,
     val value: Long,
-)
+) {
+    companion object {
+        fun deserialize(str: String): ReadTestStruct {
+            val v = fromStr(str).getOrThrow()
+            val obj = v.asObject() ?: throw IllegalArgumentException("Expected object")
+            val key = obj.get("key")?.asI64() ?: obj.get("key")?.asU64()?.toLong() ?: throw IllegalArgumentException("Missing key")
+            val value = obj.get("value")?.asI64() ?: obj.get("value")?.asU64()?.toLong() ?: throw IllegalArgumentException("Missing value")
+            return ReadTestStruct(key, value)
+        }
+    }
+}
 
 private class SingleThenPanicIter(
     private var data: String?,
@@ -33,13 +41,11 @@ private class SingleThenPanicIter(
 }
 
 class ReadTest {
-    private val json = Json { ignoreUnknownKeys = true }
-
     @Test
     fun pendingStreamResultsInPendingItem() =
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}\n")
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2)), results)
         }
@@ -48,7 +54,7 @@ class ReadTest {
     fun emptyStreamResultsInEmptyResults() =
         runTest {
             val flow = emptyFlow<String>()
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList()
             assertTrue(results.isEmpty())
         }
@@ -57,7 +63,7 @@ class ReadTest {
     fun singletonIterWithSingleJsonLine() =
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}\n")
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2)), results)
         }
@@ -66,7 +72,7 @@ class ReadTest {
     fun multipleIterItemsComposeSingleJsonLine() =
         runTest {
             val flow = flowOf("{\"key\":", "1,\"value\":", "2}\n")
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2)), results)
         }
@@ -76,7 +82,7 @@ class ReadTest {
         runTest {
             val iter = SingleThenPanicIter("{\"key\":1,\"value\":2}\n{\"key\":3,\"value\":4}\n")
             val flow = iter.asSequence().asFlow()
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2), ReadTestStruct(3, 4)), results)
         }
@@ -86,7 +92,7 @@ class ReadTest {
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}\n\n{\"key\":3,\"value\":4}\n")
             val config = ParseConfig.DEFAULT.withEmptyLineHandling(EmptyLineHandling.ParseAlways)
-            val readStream = JsonReadStream.fromStringFlow(flow, config) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow, config) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList()
             assertEquals(3, results.size)
             assertEquals(ReadTestStruct(1, 2), results[0].getOrThrow())
@@ -99,7 +105,7 @@ class ReadTest {
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}\n\n{\"key\":3,\"value\":4}\n")
             val config = ParseConfig.DEFAULT.withEmptyLineHandling(EmptyLineHandling.IgnoreEmpty)
-            val readStream = JsonReadStream.fromStringFlow(flow, config) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow, config) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2), ReadTestStruct(3, 4)), results)
         }
@@ -109,7 +115,7 @@ class ReadTest {
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}")
             val config = ParseConfig.DEFAULT.withParseRest(true)
-            val readStream = JsonReadStream.fromStringFlow(flow, config) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow, config) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList().map { it.getOrThrow() }
             assertEquals(listOf(ReadTestStruct(1, 2)), results)
         }
@@ -119,7 +125,7 @@ class ReadTest {
         runTest {
             val flow = flowOf("invalid json")
             val config = ParseConfig.DEFAULT.withParseRest(true)
-            val readStream = JsonReadStream.fromStringFlow(flow, config) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow, config) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList()
             assertEquals(1, results.size)
             assertTrue(results[0].isFailure)
@@ -130,7 +136,7 @@ class ReadTest {
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}")
             val config = ParseConfig.DEFAULT.withParseRest(false)
-            val readStream = JsonReadStream.fromStringFlow(flow, config) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow, config) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList()
             assertTrue(results.isEmpty())
         }
@@ -139,7 +145,7 @@ class ReadTest {
     fun fallibleStreamOperatesCorrectlyWithInterspersedErrors() =
         runTest {
             val flow = flowOf("{\"key\":1,\"value\":2}\n", "bad json\n", "{\"key\":3,\"value\":4}\n")
-            val readStream = JsonReadStream.fromStringFlow(flow) { json.decodeFromString<ReadTestStruct>(it) }
+            val readStream = JsonReadStream.fromStringFlow(flow) { ReadTestStruct.deserialize(it) }
             val results = readStream.toFlow().toList()
             assertEquals(3, results.size)
             assertEquals(ReadTestStruct(1, 2), results[0].getOrThrow())

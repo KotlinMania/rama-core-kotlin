@@ -1,4 +1,3 @@
-// port-lint: tests lib.rs
 package io.github.kotlinmania.ramacore
 
 import kotlinx.coroutines.test.runTest
@@ -6,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class LibTest {
+class RamaFuturesTest {
     @Test
     fun testZip() =
         runTest {

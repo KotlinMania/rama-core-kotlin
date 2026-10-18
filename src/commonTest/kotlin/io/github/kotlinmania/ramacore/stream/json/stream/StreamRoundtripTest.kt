@@ -1,4 +1,3 @@
-// port-lint: tests stream/json/stream/mod.rs
 package io.github.kotlinmania.ramacore.stream.json.stream
 
 import kotlinx.coroutines.flow.emptyFlow
@@ -9,7 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ModTest {
+class StreamRoundtripTest {
     @Test
     fun writeReadPendingEmpty() =
         runTest {
